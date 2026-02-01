@@ -39,6 +39,11 @@
         </repository>
 
         <repository>
+            <id>rosewood-public</id>
+            <url>https://repo.rosewooddev.io/repository/public/</url>
+        </repository>
+
+        <repository>
             <id>nightexpress-releases</id>
             <url>https://repo.nightexpressdev.com/releases</url>
         </repository>
