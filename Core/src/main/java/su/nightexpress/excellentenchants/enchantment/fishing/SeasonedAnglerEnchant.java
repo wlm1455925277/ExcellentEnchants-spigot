@@ -27,8 +27,9 @@ public class SeasonedAnglerEnchant extends GameEnchantment implements FishingEnc
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.xpModifier = Modifier.load(config, "SeasonedAngler.XP_Modifier",
-            Modifier.addictive(0).perLevel(50).capacity(300),
-            "Amount (in percent) of additional XP from fishing.");
+                Modifier.addictive(0).perLevel(50).capacity(300),
+                "钓鱼获得的额外经验百分比（单位：%）。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getXPPercent(level)));
     }

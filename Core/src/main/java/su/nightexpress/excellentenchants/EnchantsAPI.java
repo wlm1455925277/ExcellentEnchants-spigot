@@ -17,7 +17,7 @@ public class EnchantsAPI {
 
     @NotNull
     public static EnchantsPlugin getPlugin() {
-        if (plugin == null) throw new IllegalStateException("API is not initialized!");
+        if (plugin == null) throw new IllegalStateException("API 尚未初始化！");
 
         return plugin;
     }

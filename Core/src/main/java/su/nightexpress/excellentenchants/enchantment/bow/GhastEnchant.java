@@ -36,12 +36,14 @@ public class GhastEnchant extends GameEnchantment implements BowEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireSpread = ConfigValue.create("Fireball.Fire_Spread",
-            true,
-            "Controls whether fireball explosion sets nearby blocks on fire.").read(config);
+                true,
+                "控制火球爆炸是否会点燃附近方块（引燃火焰）。"
+        ).read(config);
 
         this.yield = Modifier.load(config, "Fireball.Yield",
-            Modifier.addictive(2).perLevel(0).capacity(5),
-            "Fireball explosion power.");
+                Modifier.addictive(2).perLevel(0).capacity(5),
+                "火球爆炸威力（强度）。"
+        );
     }
 
     public boolean isFireSpread() {
@@ -64,8 +66,8 @@ public class GhastEnchant extends GameEnchantment implements BowEnchant {
 
         Fireball fireball;
 
-        // Shoot small fireballs for the Multishot enchantment,
-        // as large ones has a slow speed and punches each other on shoot.
+        // 若弓上存在“多重射击”（Multishot）附魔，则发射小火球：
+        // 大火球速度较慢，并且多发时会在射出瞬间互相碰撞/顶开。
         if (EnchantsUtils.contains(bow, Enchantment.MULTISHOT)) {
             fireball = shooter.launchProjectile(SmallFireball.class);
             fireball.setVelocity(projectile.getVelocity().normalize().multiply(0.5f));

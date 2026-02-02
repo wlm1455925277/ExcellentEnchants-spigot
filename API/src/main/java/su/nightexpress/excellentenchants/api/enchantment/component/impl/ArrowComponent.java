@@ -19,7 +19,7 @@ public class ArrowComponent implements EnchantComponent<ArrowEffects> {
     @NotNull
     public ArrowEffects read(@NotNull FileConfig config, @NotNull ArrowEffects defaultValue) {
         UniParticle effect = ConfigValue.create("ArrowEffects.Trail", UniParticle::read, defaultValue.getTrailEffect(),
-            "Sets projectile particle trail effect."
+                "设置投射物的粒子拖尾效果。"
         ).read(config);
 
         return new ArrowEffects(effect);

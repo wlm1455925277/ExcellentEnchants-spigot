@@ -26,7 +26,7 @@ public class SpigotEnchantsBootstrap {
         };
 
         if (registryHack == null) {
-            plugin.error("Unsupported server version!");
+            plugin.error("不支持的服务器版本！");
             plugin.getPluginManager().disablePlugin(plugin);
             return;
         }
@@ -43,11 +43,15 @@ public class SpigotEnchantsBootstrap {
         SpigotItemTagLookup tagLookup = new SpigotItemTagLookup();
         ItemSetRegistry itemSetRegistry = new ItemSetRegistry(dataDirectory, tagLookup);
 
-        // Load ItemTag set objects and register server Tags for them.
+        // 加载 ItemTag 集合对象，并为它们注册服务器 Tag。
         itemSetRegistry.load();
         itemSetRegistry.values().forEach(registryHack::createItemsSet);
 
-        EnchantCatalog.loadAll(dataDirectory, itemSetRegistry, (entry, exception) -> plugin.error("Could not load '%s' enchantment: '%s'".formatted(entry.getId(), exception.getMessage())));
+        EnchantCatalog.loadAll(
+                dataDirectory,
+                itemSetRegistry,
+                (entry, exception) -> plugin.error("无法加载附魔 '%s'：'%s'".formatted(entry.getId(), exception.getMessage()))
+        );
 
         EnchantCatalog.enabled().forEach(catalog -> registryHack.registerEnchantment(catalog, distributionConfig));
 

@@ -2,7 +2,7 @@ main: su.nightexpress.excellentenchants.EnchantsPlugin
 bootstrapper: su.nightexpress.excellentenchants.bridge.paper.PaperEnchantsBootstrap
 name: ExcellentEnchants
 version: '${project.version}'
-description: A lot of new enchantments properly integrated into the server!
+description: 大量新增附魔，并与服务器机制正确/深度集成！
 api-version: '1.21'
 #loader: io.papermc.testplugin.TestPluginLoader
 dependencies:

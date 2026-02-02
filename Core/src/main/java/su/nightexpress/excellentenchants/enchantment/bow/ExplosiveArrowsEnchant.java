@@ -44,20 +44,24 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireSpread = ConfigValue.create("Explosion.Fire_Spread",
-            true,
-            "Controls whether explosion set nearby blocks on fire.").read(config);
+                true,
+                "控制爆炸是否会点燃附近方块（引燃火焰）。"
+        ).read(config);
 
         this.damageItems = ConfigValue.create("Explosion.Damage_Items",
-            false,
-            "Controls whether explosion can destroy ground items.").read(config);
+                false,
+                "控制爆炸是否可以破坏地上的掉落物（Item）与展示框（ItemFrame）。"
+        ).read(config);
 
         this.damageBlocks = ConfigValue.create("Explosion.Damage_Blocks",
-            false,
-            "Controls whether explosion can break blocks.").read(config);
+                false,
+                "控制爆炸是否可以破坏方块（地形破坏）。"
+        ).read(config);
 
         this.power = Modifier.load(config, "Explosion.Power",
-            Modifier.addictive(1).perLevel(1).capacity(5),
-            "Explosion power.");
+                Modifier.addictive(1).perLevel(1).capacity(5),
+                "爆炸威力（强度）。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getPower(level)));
     }

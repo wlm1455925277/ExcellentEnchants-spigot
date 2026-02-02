@@ -29,8 +29,9 @@ public class WisdomEnchant extends GameEnchantment implements KillEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.xpModifier = Modifier.load(config, "Wisdom.XP_Modifier",
-            Modifier.addictive(1).perLevel(0.5).capacity(3D),
-            "Exp modifier value. The original exp amount will be multiplied on this value.");
+                Modifier.addictive(1).perLevel(0.5).capacity(3D),
+                "经验倍率值：原本掉落的经验值会乘以该倍率。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getXPModifier(level) * 100D - 100D));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_MODIFIER, level -> NumberUtil.format(this.getXPModifier(level)));

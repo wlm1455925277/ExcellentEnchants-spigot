@@ -31,14 +31,14 @@ public class TemperEnchant extends GameEnchantment implements AttackEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.damageAmount = Modifier.load(config, "Temper.Damage_Amount",
-            Modifier.addictive(0).perLevel(5).capacity(100),
-            "Extra damage (in %)"
+                Modifier.addictive(0).perLevel(5).capacity(100),
+                "额外伤害（百分比 %）。"
         );
 
         this.damageStep = Modifier.load(config, "Settings.Damage.Step",
-            Modifier.addictive(0.5),
-            "Damage will be increased for every X entity's health points missing. Where X is this value.",
-            "By default increases damage by 5% for every 0.5 HP missing."
+                Modifier.addictive(0.5),
+                "每损失 X 点生命值就提高一次伤害倍率，X 即为该数值。",
+                "默认：每损失 0.5 生命值（HP）额外提高 5% 伤害。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAmount(level)));

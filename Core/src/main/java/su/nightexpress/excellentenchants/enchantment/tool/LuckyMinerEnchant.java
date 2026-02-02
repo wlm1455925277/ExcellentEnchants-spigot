@@ -31,10 +31,11 @@ public class LuckyMinerEnchant extends GameEnchantment implements MiningEnchant 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.xpModifier = Modifier.load(config, "LuckyMiner.XP_Modifier",
-            Modifier.addictive(1).perLevel(0.5).capacity(3D),
-            "XP Modifier. Amount of dropped XP will be multiplied on this value."
+                Modifier.addictive(1).perLevel(0.5).capacity(3D),
+                "经验倍率（乘数）。方块掉落的经验值将乘以该倍率。"
         );
 
+        // 显示为“额外经验百分比”：例如 1.5 -> (1.5*100-100)=50%（+50%）
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getXPModifier(level) * 100D - 100D));
     }
 

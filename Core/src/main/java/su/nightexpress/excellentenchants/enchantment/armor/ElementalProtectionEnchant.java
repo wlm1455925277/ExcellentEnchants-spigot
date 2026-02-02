@@ -27,10 +27,10 @@ import java.util.Set;
 public class ElementalProtectionEnchant extends GameEnchantment implements ProtectionEnchant {
 
     private static final Set<DamageType> DAMAGE_CAUSES = Lists.newSet(
-        DamageType.WITHER,
-        DamageType.MAGIC,
-        DamageType.FREEZE,
-        DamageType.LIGHTNING_BOLT
+            DamageType.WITHER,
+            DamageType.MAGIC,
+            DamageType.FREEZE,
+            DamageType.LIGHTNING_BOLT
     );
 
     private Modifier amount;
@@ -44,18 +44,18 @@ public class ElementalProtectionEnchant extends GameEnchantment implements Prote
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.amount = Modifier.load(config, "Protection.Amount",
-            Modifier.addictive(0).perLevel(5).capacity(25),
-            "Protection amount given by enchantment."
+                Modifier.addictive(0).perLevel(5).capacity(25),
+                "该附魔提供的减伤数值。"
         );
 
         this.capacity = ConfigValue.create("Protection.Capacity",
-            80D,
-            "Max. possible protection value from all armor pieces."
+                80D,
+                "所有护甲部位合计可叠加的最大减伤上限。"
         ).read(config);
 
         this.multiplier = ConfigValue.create("Protection.Multiplier",
-            true,
-            "Controls if protection amount is in percent."
+                true,
+                "控制减伤数值是否按百分比计算。"
         ).read(config);
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getProtectionAmount(level)));

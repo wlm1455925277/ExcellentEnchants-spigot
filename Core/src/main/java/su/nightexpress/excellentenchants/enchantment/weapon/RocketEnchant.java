@@ -35,8 +35,8 @@ public class RocketEnchant extends GameEnchantment implements AttackEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireworkPower = Modifier.load(config, "Rocket.Firework_Power",
-            Modifier.addictive(1).perLevel(0.25).capacity(3D),
-            "Firework power. The more power = the higher fly distance.");
+                Modifier.addictive(1).perLevel(0.25).capacity(3D),
+                "烟花火箭力度（Power）。数值越高，飞行距离越远。");
     }
 
     public final double getFireworkPower(int level) {
@@ -69,7 +69,13 @@ public class RocketEnchant extends GameEnchantment implements AttackEnchant {
         FireworkEffect.Type type = Randomizer.pick(FireworkEffect.Type.values());
         Color color = Color.fromBGR(Randomizer.nextInt(256), Randomizer.nextInt(256), Randomizer.nextInt(256));
         Color fade = Color.fromBGR(Randomizer.nextInt(256), Randomizer.nextInt(256), Randomizer.nextInt(256));
-        FireworkEffect effect = FireworkEffect.builder().flicker(Randomizer.nextBoolean()).withColor(color).withFade(fade).with(type).trail(Randomizer.nextBoolean()).build();
+        FireworkEffect effect = FireworkEffect.builder()
+                .flicker(Randomizer.nextBoolean())
+                .withColor(color)
+                .withFade(fade)
+                .with(type)
+                .trail(Randomizer.nextBoolean())
+                .build();
         meta.addEffect(effect);
         meta.setPower((int) this.getFireworkPower(level));
         firework.setFireworkMeta(meta);

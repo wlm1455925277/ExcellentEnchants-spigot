@@ -1,6 +1,5 @@
 package su.nightexpress.excellentenchants.enchantment.armor;
 
-
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.damage.DamageType;
@@ -37,15 +36,15 @@ public class ReboundEnchant extends GameEnchantment implements ProtectionEnchant
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.modifier = Modifier.load(config, "Rebound.Modifier",
-            Modifier.addictive(0.2).perLevel(0.1).capacity(0.5),
-            "Sets bounce power modifier based on fall distance.",
-            "Greater value = greater rebound."
+                Modifier.addictive(0.2).perLevel(0.1).capacity(0.5),
+                "设置反弹力度系数（与摔落伤害/摔落距离相关联）。",
+                "数值越大 = 反弹越高。"
         );
 
         this.capacity = Modifier.load(config, "Rebound.Capacity",
-            Modifier.addictive(0.75).perLevel(0.15).capacity(1.5D),
-            "Sets maximal bounce power modifier value.",
-            "Greater value = greater rebound."
+                Modifier.addictive(0.75).perLevel(0.15).capacity(1.5D),
+                "设置反弹力度的最大上限（封顶值）。",
+                "数值越大 = 反弹越高。"
         );
     }
 

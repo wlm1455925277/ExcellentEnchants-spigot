@@ -59,30 +59,34 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
 
         var lifeCycle = context.getLifecycleManager();
 
-        // Create custom tags with custom items for enchantment's 'primary' and 'supported' items sets.
-        // Use 'postFlatten' instead of 'preFlatten' to access vanilla item tags to create default item sets more effectively.
+        // 为附魔的“主物品集(primary)”与“可用物品集(supported)”创建包含自定义物品的 Tag。
+        // 使用 postFlatten 而不是 preFlatten：这样可以访问原版物品 Tag，更方便生成默认 ItemSet。
         lifeCycle.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ITEM).newHandler(event -> {
             PostFlattenTagRegistrar<ItemType> registrar = event.registrar();
             PaperItemTagLookup tagLookup = new PaperItemTagLookup(registrar);
             ItemSetRegistry itemSetRegistry = new ItemSetRegistry(dataDirectory, tagLookup);
 
-            // Load default item types.
+            // 加载默认物品类型集合（ItemSet）。
             itemSetRegistry.load();
 
-            // Register custom tags for our ItemSet objects.
+            // 为我们的 ItemSet 对象注册自定义 Tag。
             itemSetRegistry.values().forEach(itemSet -> {
                 TagKey<ItemType> tagKey = this.customItemTag(itemSet.getId());
-                // Transform item names into TagEntry values by creating TypedKey for each item.
+                // 将物品名转换为 TagEntry：为每个物品创建对应的 TypedKey。
                 var tagEntries = itemSet.getMaterials().stream().map(itemName -> TypedKey.create(RegistryKey.ITEM, Key.key(itemName))).toList();
 
                 registrar.addToTag(tagKey, tagEntries);
             });
 
-            // Load defaults and read from the config files Definition and Distribution settings for enchants.
-            EnchantCatalog.loadAll(dataDirectory, itemSetRegistry, (entry, exception) -> context.getLogger().error("Could not load '{}' enchantment: '{}'", entry.getId(), exception.getMessage()));
+            // 加载默认值，并从配置文件读取附魔的 Definition 与 Distribution 设置。
+            EnchantCatalog.loadAll(
+                    dataDirectory,
+                    itemSetRegistry,
+                    (entry, exception) -> context.getLogger().error("无法加载 '{}' 附魔：'{}'", entry.getId(), exception.getMessage())
+            );
         }));
 
-        // Register a new handler for the freeze lifecycle event on the enchantment registry
+        // 在附魔注册表冻结（freeze）生命周期事件上注册处理器
         lifeCycle.registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
             var registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
 
@@ -98,17 +102,21 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
                 Tag<@NonNull ItemType> supportedItems = event.getOrCreateTag(supportedItemsTag);
 
                 RegistryKeySet<@NonNull Enchantment> exclusiveSet = RegistrySet.keySet(RegistryKey.ENCHANTMENT, definition.getExclusiveSet()
-                    .stream()
-                    .map(rawKey -> {
-                        Key key = NightKey.key(rawKey).toBukkit();
-                        if (registry.get(key) == null) {
-                            context.getLogger().warn("Unknown enchantment '{}' in exclusive list of '{}'. Ensure excluded enchantments are loaded before they are listed as exclusions for others.", key, data.getId());
-                            return null;
-                        }
-                        return EnchantmentKeys.create(key);
-                    })
-                    .filter(Objects::nonNull)
-                    .toList()
+                        .stream()
+                        .map(rawKey -> {
+                            Key key = NightKey.key(rawKey).toBukkit();
+                            if (registry.get(key) == null) {
+                                context.getLogger().warn(
+                                        "在 '{}' 的互斥列表中发现未知附魔 '{}'。请确保被互斥的附魔在被引用前已先加载/注册。",
+                                        data.getId(),
+                                        key
+                                );
+                                return null;
+                            }
+                            return EnchantmentKeys.create(key);
+                        })
+                        .filter(Objects::nonNull)
+                        .toList()
                 );
 
                 EquipmentSlotGroup[] activeSlots = Stream.of(supportedSet.getSlots()).map(EquipmentSlot::getGroup).toArray(EquipmentSlotGroup[]::new);
@@ -117,18 +125,18 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
                 String nameOnly = MiniMessage.miniMessage().stripTags(definition.getDisplayName());
 
                 event.registry().register(
-                    EnchantmentKeys.create(key),
-                    builder -> builder
-                        .description(Component.translatable(key.asString(), nameOnly, component.style()))
-                        .primaryItems(primaryItems)
-                        .supportedItems(supportedItems)
-                        .exclusiveWith(exclusiveSet)
-                        .anvilCost(definition.getAnvilCost())
-                        .maxLevel(definition.getMaxLevel())
-                        .weight(definition.getWeight())
-                        .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(definition.getMinCost().base(), definition.getMinCost().perLevel()))
-                        .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(definition.getMaxCost().base(), definition.getMaxCost().perLevel()))
-                        .activeSlots(activeSlots)
+                        EnchantmentKeys.create(key),
+                        builder -> builder
+                                .description(Component.translatable(key.asString(), nameOnly, component.style()))
+                                .primaryItems(primaryItems)
+                                .supportedItems(supportedItems)
+                                .exclusiveWith(exclusiveSet)
+                                .anvilCost(definition.getAnvilCost())
+                                .maxLevel(definition.getMaxLevel())
+                                .weight(definition.getWeight())
+                                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(definition.getMinCost().base(), definition.getMinCost().perLevel()))
+                                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(definition.getMaxCost().base(), definition.getMaxCost().perLevel()))
+                                .activeSlots(activeSlots)
                 );
             });
         }));
@@ -143,29 +151,29 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
                 TagEntry<Enchantment> entry = TagEntry.valueEntry(key);
                 Set<TagEntry<Enchantment>> list = Lists.newSet(entry);
 
-                // Any enchantment can be treasure.
+                // 任何附魔都可以是“宝藏附魔”。
                 if (distribution.isTreasure()) {
                     registrar.addToTag(EnchantmentTagKeys.TREASURE, list);
                     registrar.addToTag(EnchantmentTagKeys.DOUBLE_TRADE_PRICE, list);
                 }
-                // This tag is included in other tags, which makes it impossible to exclude enchants of this tag from other tags.
+                // 该 Tag 会被包含进其他 Tag，导致无法从其他 Tag 中排除它的附魔。
                 //else registrar.addToTag(EnchantmentTagKeys.NON_TREASURE, list);
 
-                // Any enchantment can be on random loot.
+                // 任何附魔都可以出现在随机战利品中。
                 if (distribution.isOnRandomLoot() && distributionConfig.isRandomLootEnabled()) {
                     registrar.addToTag(EnchantmentTagKeys.ON_RANDOM_LOOT, list);
                 }
 
-                // Only non-treasure enchantments should be on mob equipment, traded equipment and non-rebalanced trades.
+                // 只有非宝藏附魔才应该出现在怪物装备、交易装备以及（未重平衡的）村民交易中。
                 if (!distribution.isTreasure()) {
                     if (distribution.isOnMobSpawnEquipment() && distributionConfig.isMobEquipmentEnabled()) {
                         registrar.addToTag(EnchantmentTagKeys.ON_MOB_SPAWN_EQUIPMENT, list);
                     }
 
-                    // This only works if Villager Trade Rebalance is disabled.
-                    // Because this experiment uses trades with predefined Enchantment Providers with Single Enchantment options.
-                    // Example: VillagerTrades.TypeSpecificTrade.oneTradeInBiomes(new ItemsForEmeralds(Items.IRON_BOOTS, 8, 1, 3, 15, 0.05F, TradeRebalanceEnchantmentProviders.TRADES_DESERT_ARMORER_BOOTS_4), VillagerType.DESERT)
-                    // Reference Classes:
+                    // 仅在“村民交易重平衡”实验关闭时有效。
+                    // 因为该实验使用预定义的 Enchantment Provider（单附魔）交易。
+                    // 示例：VillagerTrades.TypeSpecificTrade.oneTradeInBiomes(...)
+                    // 相关类参考：
                     // - VillagerTrades
                     // - TradeRebalanceEnchantmentProviders
                     // - VanillaEnchantmentProviders
@@ -174,7 +182,7 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
                     }
                 }
 
-                // Any enchantment can be tradable (on enchanted books).
+                // 任何附魔都可以被交易（附魔书）。
                 if (distribution.isTradable() && distributionConfig.isTradingEnabled()) {
                     distribution.getTrades().forEach(tradeType -> {
                         registrar.addToTag(getTradeKey(tradeType), list);
@@ -186,7 +194,7 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
                     registrar.addToTag(EnchantmentTagKeys.CURSE, list);
                 }
                 else {
-                    // Only non-curse and non-treasure enchantments should go in enchanting table.
+                    // 只有非诅咒且非宝藏附魔才应该进入附魔台。
                     if (!distribution.isTreasure()) {
                         if (distribution.isDiscoverable() && distributionConfig.isEnchantingEnabled()) {
                             registrar.addToTag(EnchantmentTagKeys.IN_ENCHANTING_TABLE, list);

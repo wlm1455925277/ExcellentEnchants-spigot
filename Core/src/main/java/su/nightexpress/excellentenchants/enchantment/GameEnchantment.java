@@ -77,19 +77,19 @@ public abstract class GameEnchantment implements CustomEnchantment {
 
     private void loadSettings(@NotNull FileConfig config) {
         this.hiddenFromList = ConfigValue.create("Settings.Hide_From_List",
-            false,
-            "Sets whether or not this enchantment will be hidden from Enchants GUI."
+                false,
+                "设置该附魔是否在“附魔列表 GUI”中隐藏。"
         ).read(config);
 
         this.visualEffects = ConfigValue.create("Settings.VisualEffects.Enabled",
-            true,
-            "Enables enchantment visual effects (mostly particles)."
+                true,
+                "启用附魔的视觉特效（主要是粒子效果等）。"
         ).read(config);
 
         if (Config.isChargesEnabled() && !this.isCurse()) {
             this.chargeable = ConfigValue.create("Settings.Charges",
-                true,
-                "Controls if Charges are enabled for this enchantment."
+                    true,
+                    "控制该附魔是否启用“充能（Charges）”机制。"
             ).read(config);
         }
 
@@ -117,7 +117,7 @@ public abstract class GameEnchantment implements CustomEnchantment {
     @NotNull
     public <T> T getComponent(@NotNull EnchantComponent<T> type) {
         Optional<?> optional = this.componentDatas.get(type);
-        return (T) optional.orElseThrow(() -> new IllegalStateException("Enchantment doesn't have the " + type.getName() + " component."));
+        return (T) optional.orElseThrow(() -> new IllegalStateException("该附魔不包含组件：" + type.getName()));
     }
 
     @Override

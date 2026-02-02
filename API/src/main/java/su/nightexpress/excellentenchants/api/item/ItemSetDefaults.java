@@ -140,7 +140,7 @@ public enum ItemSetDefaults {
     @NotNull
     public ItemSet getItemSet() {
         if (this.itemSet == null) {
-            throw new IllegalStateException("ItemSet is not initialized!");
+            throw new IllegalStateException("ItemSet 尚未初始化！");
         }
         return this.itemSet;
     }

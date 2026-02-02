@@ -64,82 +64,82 @@ public class EnchantDefinition implements Writeable {
     @NotNull
     public static EnchantDefinition read(@NotNull FileConfig config, @NotNull String path, @NotNull ItemSetRegistry itemSetRegistry) throws IllegalStateException {
         String displayName = ConfigValue.create(path + ".DisplayName",
-            "null",
-            "Enchantment display name.",
-            "https://docs.advntr.dev/minimessage/format.html#standard-tags",
-            "[*] Only one color and decorations are allowed.",
-            "[*] Reboot required when changed."
+                "null",
+                "附魔显示名称。",
+                "https://docs.advntr.dev/minimessage/format.html#standard-tags",
+                "[*] 仅允许使用一种颜色和装饰样式。",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         List<String> description = ConfigValue.create(path + ".Description",
-            Collections.emptyList(),
-            "Enchantment description.",
-            "[*] Reboot required when changed."
+                Collections.emptyList(),
+                "附魔描述文本。",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         int weight = ConfigValue.create(path + ".Weight",
-            5,
-            "Weight affects the chance of getting an enchantment from enchanting or loots.",
-            "Value between 1 and " + WEIGHT_CAP + " (inclusive).",
-            "[*] Reboot required when changed."
+                5,
+                "权重会影响在附魔台或战利品中获取该附魔的概率。",
+                "取值范围：1 ~ " + WEIGHT_CAP + "（包含边界）。",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         int maxLevel = ConfigValue.create(path + ".MaxLevel",
-            3,
-            "The maximum level of this enchantment.",
-            "Value between 1 and " + LEVEL_CAP + " (inclusive).",
-            "[*] Reboot required when changed."
+                3,
+                "该附魔的最高等级。",
+                "取值范围：1 ~ " + LEVEL_CAP + "（包含边界）。",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         EnchantCost minCost = ConfigValue.create(path + ".MinCost", EnchantCost::read,
-            new EnchantCost(0, 0),
-            "The minimum possible cost of this enchantment in levels.",
-            "Explanation: https://minecraft.wiki/w/Enchanting_mechanics#How_enchantments_are_chosen",
-            "Vanilla costs: https://minecraft.wiki/w/Enchanting/Levels",
-            "[*] Reboot required when changed."
+                new EnchantCost(0, 0),
+                "该附魔所需的最低等级花费（经验等级）。",
+                "机制说明：https://minecraft.wiki/w/Enchanting_mechanics#How_enchantments_are_chosen",
+                "原版花费参考：https://minecraft.wiki/w/Enchanting/Levels",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         EnchantCost maxCost = ConfigValue.create(path + ".MaxCost", EnchantCost::read,
-            new EnchantCost(0, 0),
-            "The maximum possible cost of this enchantment in levels.",
-            "Explanation: https://minecraft.wiki/w/Enchanting_mechanics#How_enchantments_are_chosen",
-            "Vanilla costs: https://minecraft.wiki/w/Enchanting/Levels",
-            "[*] Reboot required when changed."
+                new EnchantCost(0, 0),
+                "该附魔所需的最高等级花费（经验等级）。",
+                "机制说明：https://minecraft.wiki/w/Enchanting_mechanics#How_enchantments_are_chosen",
+                "原版花费参考：https://minecraft.wiki/w/Enchanting/Levels",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         int anvilCost = ConfigValue.create(path + ".AnvilCost",
-            1,
-            "The base cost when applying this enchantment to another item using an anvil. Halved when adding using a book, multiplied by the level of the enchantment.",
-            "[*] Reboot required when changed."
+                1,
+                "在铁砧上将该附魔应用到另一件物品的基础费用。使用附魔书添加时费用减半，并会再乘以附魔等级。",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         String supportedItemsId = ConfigValue.create(path + ".SupportedItems",
-            "null",
-            "Items on which this enchantment can be applied using an anvil or using the /enchant command.",
-            EnchantsPlaceholders.WIKI_ITEM_SETS,
-            "[*] Reboot required when changed."
+                "null",
+                "该附魔可通过铁砧或 /enchant 命令应用到的物品集合。",
+                EnchantsPlaceholders.WIKI_ITEM_SETS,
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         String primaryItemsId = ConfigValue.create(path + ".PrimaryItems",
-            "null",
-            "Items for which this enchantment appears in an enchanting table.",
-            EnchantsPlaceholders.WIKI_ITEM_SETS,
-            "[*] Reboot required when changed."
+                "null",
+                "该附魔会在附魔台中出现（可被随机到）的物品集合。",
+                EnchantsPlaceholders.WIKI_ITEM_SETS,
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         ItemSet supportedItems = itemSetRegistry.getByKey(supportedItemsId);
-        if (supportedItems == null) throw new IllegalStateException("Invalid supported set");
+        if (supportedItems == null) throw new IllegalStateException("无效的 SupportedItems 物品集合");
 
         ItemSet primaryItems = itemSetRegistry.getByKey(primaryItemsId);
-        if (primaryItems == null) throw new IllegalStateException("Invalid primary items set");
+        if (primaryItems == null) throw new IllegalStateException("无效的 PrimaryItems 物品集合");
 
         Set<String> conflicts = ConfigValue.create(path + ".Exclusives",
-            Collections.emptySet(),
-            "Enchantments that are incompatible with this enchantment.",
-            "[*] Vanilla enchantments must be specified as: 'minecraft:enchant_name'.",
-            "[*] Excellent enchantments must be specified as: '%s.".formatted(EnchantsKeys.create("enchant_name")),
-            "    If custom namespace is disabled, use the vanilla (minecraft) one.",
-            "[*] Reboot required when changed."
+                Collections.emptySet(),
+                "与该附魔互斥（不兼容）的附魔列表。",
+                "[*] 原版附魔必须按如下格式填写：'minecraft:enchant_name'。",
+                "[*] ExcellentEnchants 附魔必须按如下格式填写：'%s.".formatted(EnchantsKeys.create("enchant_name")),
+                "    如果禁用了自定义命名空间，请使用原版（minecraft）命名空间。",
+                "[*] 修改后需要重启生效。"
         ).read(config);
 
         return new EnchantDefinition(displayName, description, weight, maxLevel, minCost, maxCost, anvilCost, supportedItems, primaryItems, conflicts);
@@ -243,19 +243,19 @@ public class EnchantDefinition implements Writeable {
 
         @NotNull
         public EnchantDefinition build() {
-            Objects.requireNonNull(this.supportedItemSet, "Enchantments must have supported items set");
+            Objects.requireNonNull(this.supportedItemSet, "附魔必须设置 SupportedItems 物品集合");
 
             return new EnchantDefinition(
-                this.displayName,
-                this.description,
-                this.weight,
-                this.maxLevel,
-                this.minCost,
-                this.maxCost,
-                this.anvilCost,
-                this.supportedItemSet,
-                this.primaryItemSet == null ? this.supportedItemSet : this.primaryItemSet,
-                this.exclusives
+                    this.displayName,
+                    this.description,
+                    this.weight,
+                    this.maxLevel,
+                    this.minCost,
+                    this.maxCost,
+                    this.anvilCost,
+                    this.supportedItemSet,
+                    this.primaryItemSet == null ? this.supportedItemSet : this.primaryItemSet,
+                    this.exclusives
             );
         }
 

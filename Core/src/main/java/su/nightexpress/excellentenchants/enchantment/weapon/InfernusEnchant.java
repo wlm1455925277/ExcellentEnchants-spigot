@@ -36,8 +36,8 @@ public class InfernusEnchant extends GameEnchantment implements TridentEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireTicks = Modifier.load(config, "Infernus.Fire_Ticks",
-            Modifier.addictive(60).perLevel(20).capacity(120),
-            "Sets for how long (in ticks) entity will be ignited on hit. 20 ticks = 1 second.");
+                Modifier.addictive(60).perLevel(20).capacity(120),
+                "设置命中后目标被点燃的持续时间（单位：tick）。20 tick = 1 秒。");
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_TIME, level -> NumberUtil.format((double) this.getFireTicks(level) / 20D));
     }

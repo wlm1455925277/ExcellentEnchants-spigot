@@ -37,15 +37,16 @@ public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.explosionPower = Modifier.load(config, "BlastMining.Explosion_Power",
-            Modifier.addictive(3).perLevel(0.75).capacity(8),
-            "Explosion power. The more power = the more blocks (area) to explode.");
+                Modifier.addictive(3).perLevel(0.75).capacity(8),
+                "爆炸威力（强度）。威力越大 = 爆炸影响的范围/方块数量越多。"
+        );
 
         this.minBlockStrength = ConfigValue.create("BlastMining.Min_Block_Strength",
-            1.3D,
-            "Minimal block strength value for the enchantment to have effect.",
-            "Block strength value is how long it takes to break the block by a hand.",
-            "For example, a Stone has 3.0 strength."
-            ).read(config);
+                1.3D,
+                "触发该附魔所需的最小方块硬度值（低于该值则不生效）。",
+                "方块硬度表示用手破坏该方块所需的时间强度。",
+                "例如：石头（Stone）的硬度为 3.0。"
+        ).read(config);
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getExplosionPower(level)));
     }

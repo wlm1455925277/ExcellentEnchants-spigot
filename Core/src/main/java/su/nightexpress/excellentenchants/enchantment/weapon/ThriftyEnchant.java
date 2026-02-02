@@ -40,27 +40,27 @@ public class ThriftyEnchant extends GameEnchantment implements KillEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.ignoredEntityTypes = ConfigValue.forSet("Thrifty.Ignored_Mobs",
-            BukkitThing::getEntityType,
-            (cfg, path, set) -> cfg.set(path, set.stream().map(Enum::name).toList()),
-            Set.of(EntityType.WITHER, EntityType.ENDER_DRAGON),
-            "List of mobs exempted from this enchantment."
+                BukkitThing::getEntityType,
+                (cfg, path, set) -> cfg.set(path, set.stream().map(Enum::name).toList()),
+                Set.of(EntityType.WITHER, EntityType.ENDER_DRAGON),
+                "不受该附魔影响的生物列表。"
         ).read(config);
 
         this.ignoredSpawnReasons = ConfigValue.forSet("Thrifty.Ignored_Spawn_Reasons",
-            id -> Enums.get(id, SpawnReason.class),
-            (cfg, path, set) -> cfg.set(path, set.stream().map(Enum::name).toList()),
-            Set.of(
-                SpawnReason.SPAWNER_EGG,
-                SpawnReason.SPAWNER,
-                SpawnReason.DISPENSE_EGG
-            ),
-            "List of mobs exempted from this enchantment when spawned by specified reasons.",
-            "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html"
+                id -> Enums.get(id, SpawnReason.class),
+                (cfg, path, set) -> cfg.set(path, set.stream().map(Enum::name).toList()),
+                Set.of(
+                        SpawnReason.SPAWNER_EGG,
+                        SpawnReason.SPAWNER,
+                        SpawnReason.DISPENSE_EGG
+                ),
+                "当生物以以下生成原因出生时，不受该附魔影响。",
+                "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html"
         ).read(config);
 
         this.ignoreMythicMobs = ConfigValue.create("Thrifty.Ignored_MythicMobs",
-            true,
-            "Sets whether or not MythicMobs should be exempted from this enchantment."
+                true,
+                "是否忽略（不作用于）MythicMobs 插件生成的怪物。"
         ).read(config);
     }
 

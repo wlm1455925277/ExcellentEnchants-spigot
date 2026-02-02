@@ -41,99 +41,99 @@ public class EnchantDistribution implements Writeable {
     @NotNull
     public static EnchantDistribution defaults() {
         return new EnchantDistribution(
-            new HashSet<>(Arrays.asList(TradeType.values())),
-            false,
-            true,
-            true,
-            true,
-            true,
-            true
+                new HashSet<>(Arrays.asList(TradeType.values())),
+                false,
+                true,
+                true,
+                true,
+                true,
+                true
         );
     }
 
     @NotNull
     public static EnchantDistribution regular(@NotNull TradeType... tradeTypes) {
         return new EnchantDistribution(
-            Lists.newSet(tradeTypes),
-            false,
-            true,
-            true,
-            true,
-            true,
-            true
+                Lists.newSet(tradeTypes),
+                false,
+                true,
+                true,
+                true,
+                true,
+                true
         );
     }
 
     @NotNull
     public static EnchantDistribution treasure(@NotNull TradeType... tradeTypes) {
         return new EnchantDistribution(
-            Lists.newSet(tradeTypes),
-            true,
-            false,
-            true,
-            false,
-            true,
-            false
+                Lists.newSet(tradeTypes),
+                true,
+                false,
+                true,
+                false,
+                true,
+                false
         );
     }
 
     public static EnchantDistribution read(@NotNull FileConfig config, @NotNull String path) {
         boolean treasure = ConfigValue.create(path + ".Treasure",
-            false,
-            "Sets whether this enchantment is a treasure enchantment.",
-            "Treasure enchantments are those that can't be obtained using an enchantment table, and won't be generated on randomly enchanted equipment sold by villagers or worn by mobs.",
-            "Treasure enchantments can only be received via looting, trading, or fishing.",
-            "If a treasure enchantment is tradable, it will have double the price (before capping to 64 emeralds) compared to a non-treasure enchantment of the same level.",
-            "[*] Reboot required when changed."
+                false,
+                "设置这个附魔是否为“宝藏附魔”。",
+                "宝藏附魔是那些无法通过附魔台获得的附魔，且不会在村民出售的随机附魔装备或怪物装备上生成。",
+                "宝藏附魔只能通过抢夺、交易或钓鱼获得。",
+                "如果宝藏附魔可以交易，它的价格会是相同等级的非宝藏附魔的两倍（在上限64绿宝石前）。",
+                "[*] 更改后需要重启服务器。"
         ).read(config);
 
         boolean tradable = ConfigValue.create(path + ".Tradeable",
-            true,
-            "Controls if this enchantment can be sold by villagers.",
-            "https://minecraft.wiki/w/Trading#Librarian",
-            "[*] Reboot required when changed."
+                true,
+                "控制这个附魔是否可以通过村民出售。",
+                "https://minecraft.wiki/w/Trading#Librarian",
+                "[*] 更改后需要重启服务器。"
         ).read(config);
 
         var tradeTypes = ConfigValue.forSet(path + ".TradeTypes",
-            name -> Enums.get(name, TradeType.class),
-            (cfg, path2, set) -> cfg.set(path2, set.stream().map(Enum::name).toList()),
-            () -> Lists.newSet(TradeType.values()),
-            "Sets in which village biomes this enchantment can be found in villager trades.",
-            "Allowed values: [" + Enums.inline(TradeType.class) + "]",
-            "https://minecraft.wiki/w/Villager_Trade_Rebalance#Trading",
-            "[*] Reboot required when changed.",
-            "[*] Has no effect if 'Tradeable' is set on 'false' and Villager Trade Rebalance is disabled."
+                name -> Enums.get(name, TradeType.class),
+                (cfg, path2, set) -> cfg.set(path2, set.stream().map(Enum::name).toList()),
+                () -> Lists.newSet(TradeType.values()),
+                "设置这个附魔在村民交易中可以在哪些村庄生物群系找到。",
+                "允许的值：[" + Enums.inline(TradeType.class) + "]",
+                "https://minecraft.wiki/w/Villager_Trade_Rebalance#Trading",
+                "[*] 更改后需要重启服务器。",
+                "[*] 如果'Tradeable'设置为'false'且村民交易平衡已禁用，则此设置不起作用。"
         ).read(config);
 
         boolean onMobSpawnEquipment = ConfigValue.create(path + ".On_Mob_Spawn_Equipment",
-            true,
-            "Controls if this enchantment can be found on spawned mobs' equipment.",
-            "https://minecraft.wiki/w/Armor#Armor_equipped_on_mobs",
-            "[*] Reboot required when changed.",
-            "[*] Has no effect if 'Treasure' is set on 'true'."
+                true,
+                "控制这个附魔是否可以在生成的怪物装备上找到。",
+                "https://minecraft.wiki/w/Armor#Armor_equipped_on_mobs",
+                "[*] 更改后需要重启服务器。",
+                "[*] 如果'Treasure'设置为'true'，则此设置不起作用。"
         ).read(config);
 
         boolean onTradedEquipment = ConfigValue.create(path + ".On_Traded_Equipment",
-            true,
-            "Controls if this enchantment can be found on equipment sold by villagers.",
-            "https://minecraft.wiki/w/Trading#Trade_offers",
-            "[*] Reboot required when changed.",
-            "[*] Has no effect if 'Treasure' is set on 'true' or Villager Trade Rebalance is ENABLED."
+                true,
+                "控制这个附魔是否可以在村民交易中找到的装备上。",
+                "https://minecraft.wiki/w/Trading#Trade_offers",
+                "[*] 更改后需要重启服务器。",
+                "[*] 如果'Treasure'设置为'true'或村民交易平衡启用，则此设置不起作用。"
         ).read(config);
 
         boolean onRandomLoot = ConfigValue.create(path + ".On_Random_Loot",
-            true,
-            "Controls if this enchantment can be found on naturally generated equipment from loot tables.",
-            "https://minecraft.wiki/w/Loot_table",
-            "[*] Reboot required when changed."
+                true,
+                "控制这个附魔是否可以在自然生成的从掉落表生成的装备上找到。",
+                "https://minecraft.wiki/w/Loot_table",
+                "[*] 更改后需要重启服务器。"
         ).read(config);
 
         boolean discoverable = ConfigValue.create(path + ".Discoverable",
-            true,
-            "Controls if this enchantment can be found in an enchanting table or use to enchant items generated by loot tables.",
-            "https://minecraft.wiki/w/Enchanting#Enchanting_table",
-            "[*] Reboot required when changed.",
-            "[*] Has no effect if 'Treasure' is set on 'true'."
+                true,
+                "控制这个附魔是否可以在附魔台找到，或用于附魔通过掉落表生成的物品。",
+                "https://minecraft.wiki/w/Enchanting#Enchanting_table",
+                "[*] 更改后需要重启服务器。",
+                "[*] 如果'Treasure'设置为'true'，则此设置不起作用。"
         ).read(config);
 
         return new EnchantDistribution(tradeTypes, treasure, discoverable, tradable, onMobSpawnEquipment, onRandomLoot, onTradedEquipment);

@@ -18,13 +18,13 @@ public class EnchantCost implements Writeable {
     @NotNull
     public static EnchantCost read(@NotNull FileConfig config, @NotNull String path) {
         int base = ConfigValue.create(path + ".Base",
-            0,
-            "The cost for a level I enchantment."
+                0,
+                "一级（I）附魔的基础花费（等级）。"
         ).read(config);
 
         int perLevel = ConfigValue.create(path + ".Per_Level",
-            0,
-            "The amount of levels added to the Base for each level above level I"
+                0,
+                "当附魔等级高于一级（I）时，每提升 1 级在 Base 基础上额外增加的等级数。"
         ).read(config);
 
         return new EnchantCost(base, perLevel);

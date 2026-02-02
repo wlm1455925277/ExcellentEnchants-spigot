@@ -51,33 +51,33 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.ignoreMythicMobs = ConfigValue.create("Decapitator.Ignore_Mythic_Mobs",
-            true,
-            "Sets whether or not MythicMobs should be ignored."
+                true,
+                "是否忽略 MythicMobs 插件生成的怪物（为 true 时，MythicMobs 怪物不会掉落头颅）。"
         ).read(config);
 
         this.ignoredEntityTypes = ConfigValue.forSet("Decapitator.Ignored_Entity_Types",
-            BukkitThing::getEntityType,
-            (cfg, path, set) -> cfg.set(path, set.stream().map(BukkitThing::getAsString).toList()),
-            () -> Lists.newSet(
-                EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.WITHER_SKELETON
-            ),
-            "List of entities, that won't drop heads."
+                BukkitThing::getEntityType,
+                (cfg, path, set) -> cfg.set(path, set.stream().map(BukkitThing::getAsString).toList()),
+                () -> Lists.newSet(
+                        EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.WITHER_SKELETON
+                ),
+                "不会掉落头颅的实体类型列表。"
         ).read(config);
 
         this.headName = ConfigValue.create("Decapitator.Head_Item.Name",
-                TagWrappers.YELLOW.wrap(EnchantsPlaceholders.GENERIC_TYPE + "'s Head"),
-                "Head item display name. Use '" + EnchantsPlaceholders.GENERIC_TYPE + "' for entity name.")
-            .read(config);
+                        TagWrappers.YELLOW.wrap(EnchantsPlaceholders.GENERIC_TYPE + " 的头颅"),
+                        "头颅物品显示名称。可用 '" + EnchantsPlaceholders.GENERIC_TYPE + "' 代表实体名称。")
+                .read(config);
 
         // TODO MobHead object
         this.headTextures = ConfigValue.forMap("Decapitator.Head_Item.Textures",
-            BukkitThing::getEntityType,
-            (cfg2, path, id) -> cfg2.getString(path + "." + id),
-            (cfg2, path, map) -> map.forEach((type, txt) -> cfg2.set(path + "." + BukkitThing.getAsString(type), txt)),
-            DecapitatorEnchant::getDefaultHeads,
-            "Head texture values for each entity type.",
-            "You can take some from http://minecraft-heads.com",
-            "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html"
+                BukkitThing::getEntityType,
+                (cfg2, path, id) -> cfg2.getString(path + "." + id),
+                (cfg2, path, map) -> map.forEach((type, txt) -> cfg2.set(path + "." + BukkitThing.getAsString(type), txt)),
+                DecapitatorEnchant::getDefaultHeads,
+                "各实体类型对应的头颅贴图（皮肤）值。",
+                "你可以从 http://minecraft-heads.com 获取一些贴图值。",
+                "实体类型参考：https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html"
         ).read(config);
     }
 
@@ -98,9 +98,9 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
         NightItem item = NightItem.fromType(material);
 
         PlaceholderContext placeholderContext = PlaceholderContext.builder()
-            .with(EnchantsPlaceholders.GENERIC_TYPE, () -> entity instanceof Player player ? player.getName() : LangUtil.getSerializedName(entity.getType()))
-            .with(EnchantsPlaceholders.GENERIC_KILLER, killer::getName)
-            .build();
+                .with(EnchantsPlaceholders.GENERIC_TYPE, () -> entity instanceof Player player ? player.getName() : LangUtil.getSerializedName(entity.getType()))
+                .with(EnchantsPlaceholders.GENERIC_KILLER, killer::getName)
+                .build();
 
         if (material == Material.PLAYER_HEAD) {
             item.setDisplayName(placeholderContext.apply(this.headName));

@@ -33,8 +33,9 @@ public class SniperEnchant extends GameEnchantment implements BowEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.speedModifier = Modifier.load(config, "Sniper.Speed_Modifier",
-            Modifier.addictive(1).perLevel(0.2).capacity(3D),
-            "Projectile's speed modifier.");
+                Modifier.addictive(1).perLevel(0.2).capacity(3D),
+                "弹射物速度倍率（乘数）。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getSpeedModifier(level) * 100D));
     }

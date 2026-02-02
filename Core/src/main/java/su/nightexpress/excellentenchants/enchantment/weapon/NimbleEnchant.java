@@ -31,8 +31,8 @@ public class NimbleEnchant extends GameEnchantment implements KillEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.ignorePlayers = ConfigValue.create("Nimble.Ignore_Players",
-            false,
-            "Sets whether or not to ignore drops from players."
+                false,
+                "设置是否忽略玩家的掉落物（为 true 时，击杀玩家不会触发拾取效果）。"
         ).read(config);
     }
 

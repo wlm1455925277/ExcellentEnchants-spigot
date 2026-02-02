@@ -19,8 +19,8 @@ import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 public class TooltipSettings extends AbstractConfig {
 
     private static final ConfigType<ChargesFormat> CHARGES_FORMAT_CONFIG_TYPE = ConfigType.of(
-        ChargesFormat::read,
-        FileConfig::set
+            ChargesFormat::read,
+            FileConfig::set
     );
 
     @Override
@@ -36,24 +36,25 @@ public class TooltipSettings extends AbstractConfig {
     }
 
     private final ConfigProperty<Boolean> booksOnly = this.addProperty(ConfigTypes.BOOLEAN, "EnchantTooltip.Books_Only",
-        false,
-        "Sets whether or not only enchanted books will have enchantment descriptions."
+            false,
+            "设置是否仅对“附魔书”显示附魔描述。"
     );
 
     private final ConfigProperty<String> formatDefault = this.addProperty(ConfigTypes.STRING, "EnchantTooltip.Format.Default",
-        GRAY.wrap("• " + GENERIC_DESCRIPTION),
-        "Sets description format for enchantments without charges."
+            GRAY.wrap("• " + GENERIC_DESCRIPTION),
+            "设置“未启用充能（Charges）”的附魔描述显示格式。"
     );
 
     private final ConfigProperty<String> formatWithCharges = this.addProperty(ConfigTypes.STRING, "EnchantTooltip.Format.WithCharges",
-        GRAY.wrap("• " + GENERIC_DESCRIPTION + " " + GENERIC_CHARGES),
-        "Sets description format for enchantments with charges enabled."
+            GRAY.wrap("• " + GENERIC_DESCRIPTION + " " + GENERIC_CHARGES),
+            "设置“启用充能（Charges）”的附魔描述显示格式。"
     );
 
-    private final ConfigProperty<Map<String, ChargesFormat>> chargesByAmountFormat = this.addProperty(ConfigTypes.forMapWithLowerKeys(CHARGES_FORMAT_CONFIG_TYPE),
-        "EnchantTooltip.Format.Charges-By-Percent",
-        getDefaultChargesFormat(),
-        "Sets charges format based on percent of max. charges amount."
+    private final ConfigProperty<Map<String, ChargesFormat>> chargesByAmountFormat = this.addProperty(
+            ConfigTypes.forMapWithLowerKeys(CHARGES_FORMAT_CONFIG_TYPE),
+            "EnchantTooltip.Format.Charges-By-Percent",
+            getDefaultChargesFormat(),
+            "根据当前充能占最大充能的百分比，设置不同的充能显示格式。"
     );
 
     public boolean isForBooksOnly() {
@@ -73,8 +74,8 @@ public class TooltipSettings extends AbstractConfig {
     @Nullable
     public ChargesFormat getTooltipChargesFormat(int percent) {
         return this.chargesByAmountFormat.get().values().stream()
-            .filter(other -> other.isAboveThreshold(percent))
-            .max(Comparator.comparingInt(ChargesFormat::getThreshold)).orElse(null);
+                .filter(other -> other.isAboveThreshold(percent))
+                .max(Comparator.comparingInt(ChargesFormat::getThreshold)).orElse(null);
     }
 
     @NotNull

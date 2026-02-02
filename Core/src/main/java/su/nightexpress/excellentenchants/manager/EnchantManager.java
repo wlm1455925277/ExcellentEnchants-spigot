@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.excellentenchants.EnchantsFiles;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
+import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -103,9 +104,9 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
 
     private void loadEnchants() {
         EnchantCatalog.enabled().forEach(this::loadEnchant);
-        ItemSetDefaults.clearAll(); // Clear default item sets from memory.
+        ItemSetDefaults.clearAll(); // 清除内存中的默认 ItemSet 缓存。
 
-        this.plugin.info("Loaded " + EnchantRegistry.getRegistered().size() + " enchantments.");
+        this.plugin.info("已加载 " + EnchantRegistry.getRegistered().size() + " 个附魔。");
     }
 
     private boolean loadEnchant(@NotNull EnchantCatalog catalog) {
@@ -118,13 +119,13 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
 
         Path file = Path.of(this.plugin.getDataFolder() + EnchantsFiles.DIR_ENCHANTS, FileConfig.withExtension(id));
         if (!Files.exists(file)) {
-            this.plugin.error("No config file present for the '%s' enchantment.".formatted(id));
+            this.plugin.error("未找到附魔 '%s' 的配置文件。".formatted(id));
             return false;
         }
 
         Enchantment bukkitEnchant = BukkitThing.getByKey(RegistryType.ENCHANTMENT, catalog.getKey());
         if (bukkitEnchant == null) {
-            this.plugin.error("No registered bukkit enchant found for '%s'.".formatted(id));
+            this.plugin.error("未找到附魔 '%s' 对应已注册的 Bukkit Enchantment。".formatted(id));
             return false;
         }
 
@@ -331,11 +332,11 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
         boolean noCache = entity.getType() != EntityType.PLAYER || !holder.isCacheable() || Version.isSpigot();
 
         for (EquipmentSlot slot : slots) {
-            if (noCache || slot == EquipmentSlot.HAND) { // Main hand is not cached
+            if (noCache || slot == EquipmentSlot.HAND) { // 主手物品不会被缓存
                 ItemStack itemStack = EntityUtil.getItemInSlot(entity, slot);
-                if (itemStack == null || itemStack.getType().isAir()) continue; // Ignore empty slots.
-                if (!EnchantsUtils.hasEnchantsAndNotABook(itemStack)) continue; // Ignore books and items without enchants.
-                if (!EnchantsUtils.isValidSlotForEnchantEffects(itemStack, slot)) continue; // Ignore armor items when holding in hands.
+                if (itemStack == null || itemStack.getType().isAir()) continue; // 忽略空槽位
+                if (!EnchantsUtils.hasEnchantsAndNotABook(itemStack)) continue; // 忽略附魔书与不含附魔的物品
+                if (!EnchantsUtils.isValidSlotForEnchantEffects(itemStack, slot)) continue; // 手持时忽略盔甲等不适用物品
 
                 enchantMap.put(itemStack, EnchantsUtils.getCustomEnchantments(itemStack, holder));
             }
@@ -362,7 +363,7 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
             if (enchant.hasComponent(EnchantComponent.PROBABILITY) && !enchant.testTriggerChance(level)) return false;
             if (!usage.useEnchant(itemStack, enchant, level)) return false;
 
-            enchant.consumeCharges(itemStack, level); // TODO Re-add equipment for mobs to apply changes
+            enchant.consumeCharges(itemStack, level); // TODO：后续重新为怪物装备写回变化（以应用充能消耗）
             return true;
         });
     }
@@ -380,4 +381,3 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
         });
     }
 }
-

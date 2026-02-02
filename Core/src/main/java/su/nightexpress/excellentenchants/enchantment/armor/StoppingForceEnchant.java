@@ -31,8 +31,10 @@ public class StoppingForceEnchant extends GameEnchantment implements DefendEncha
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.knockbackReduction = Modifier.load(config, "Knockback.Reduction",
-            Modifier.addictive(0.3).perLevel(0.2).capacity(1D),
-            "Sets the knockback multiplier when taking damage.", "Lower value = less knockback.");
+                Modifier.addictive(0.3).perLevel(0.2).capacity(1D),
+                "受到伤害时的击退倍率（乘数）。",
+                "数值越低 = 被击退越少。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getKnockbackReduction(level) * 100));
     }

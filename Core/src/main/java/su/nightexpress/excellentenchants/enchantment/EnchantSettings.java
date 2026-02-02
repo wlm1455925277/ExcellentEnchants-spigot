@@ -14,47 +14,47 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-
 public class EnchantSettings extends AbstractConfig {
 
     private final ConfigProperty<Long> arrowEffectsTickInterval = this.addProperty(ConfigTypes.LONG, "Arrow_Effects.Tick_Interval",
-        1L,
-        "Sets tick interval for arrow & trident particle effect trails added by enchantments.",
-        "[Increase for performance; Decrease for better visuals]",
-        "[20 ticks = 1 second]",
-        "[Default is 1]"
+            1L,
+            "设置由附魔添加的“箭矢/三叉戟 粒子拖尾效果”的刷新间隔（tick）。",
+            "[提高数值 = 更省性能；降低数值 = 更顺滑的视觉效果]",
+            "[20 tick = 1 秒]",
+            "[默认值：1]"
     );
 
     private final ConfigProperty<Integer> passiveEnchantsTickInterval = this.addProperty(ConfigTypes.INT, "Passive_Enchants.Interval",
-        1,
-        "Tick interval for passive enchantments (in seconds).",
-        "Passive enchants depends on entity's 'ticksLived' value, changing this value may result in passive enchants not triggered correctly.",
-        "[Default is 1]"
+            1,
+            "被动类附魔的触发间隔（单位：秒）。",
+            "被动附魔依赖实体的 ticksLived 值；修改该值可能导致被动附魔触发不准确。",
+            "[默认值：1]"
     );
 
     private final ConfigProperty<Boolean> passiveEnchantsAllowForMobs = this.addProperty(ConfigTypes.BOOLEAN, "Passive_Enchants.AllowForMobs",
-        true,
-        "Controls whether mobs are affected by effects of passive enchantments.",
-        "[Disable for performance; Enable for better experience]",
-        "[Default is true]"
+            true,
+            "控制怪物是否也会受到“被动附魔效果”的影响。",
+            "[关闭以提升性能；开启以获得更完整的游戏体验]",
+            "[默认值：true]"
     );
 
-    private final ConfigProperty<Map<String, Set<String>>> disabledEnchantsByWorld = this.addProperty(ConfigTypes.forMapWithLowerKeys(ConfigTypes.STRING_SET_LOWER_CASE),
-        "Disabled.ByWorld",
-        Map.of(
-            "your_world_name", Set.of("enchantment_name", "ice_aspect"),
-            "another_world", Set.of("another_enchantment", "ice_aspect")
-        ),
-        "Put here CUSTOM enchantment names that you want to disable in specific worlds.",
-        "To disable all enchantments for a world, use '" + EnchantsPlaceholders.WILDCARD + "' instead of enchantment names.",
-        "Enchantment names are equal to their config file names in the '" + EnchantsFiles.DIR_ENCHANTS + "' directory.",
-        "[*] This setting only disables enchantment effects, not the enchantment distribution there!"
+    private final ConfigProperty<Map<String, Set<String>>> disabledEnchantsByWorld = this.addProperty(
+            ConfigTypes.forMapWithLowerKeys(ConfigTypes.STRING_SET_LOWER_CASE),
+            "Disabled.ByWorld",
+            Map.of(
+                    "your_world_name", Set.of("enchantment_name", "ice_aspect"),
+                    "another_world", Set.of("another_enchantment", "ice_aspect")
+            ),
+            "在此处填写你想在指定世界禁用的“自定义附魔名称”。",
+            "如需对某个世界禁用所有附魔，请使用 '" + EnchantsPlaceholders.WILDCARD + "' 代替附魔名称列表。",
+            "附魔名称等同于 '" + EnchantsFiles.DIR_ENCHANTS + "' 目录下的附魔配置文件名。",
+            "[*] 注意：此设置只会禁用附魔效果，不会影响该世界的附魔获取/分布（掉落、附魔台、交易等）！"
     );
 
     private final ConfigProperty<Integer> anvilEnchantLimit = this.addProperty(ConfigTypes.INT, "Anvil.Enchant_Limit",
-        5,
-        "Prevents item from being enchanted using anvil if it already contains specific amount of custom enchantments.",
-        "[Default is 5]"
+            5,
+            "当物品已拥有指定数量的自定义附魔时，阻止继续通过铁砧附魔（限制上限）。",
+            "[默认值：5]"
     );
 
     public long getArrowEffectsTickInterval() {
@@ -70,7 +70,9 @@ public class EnchantSettings extends AbstractConfig {
     }
 
     public boolean isEnchantDisabledInWorld(@NotNull World world, @NotNull CustomEnchantment enchantment) {
-        return this.disabledEnchantsByWorld.get().getOrDefault(LowerCase.INTERNAL.apply(world.getName()), Collections.emptySet()).contains(enchantment.getId());
+        return this.disabledEnchantsByWorld.get()
+                .getOrDefault(LowerCase.INTERNAL.apply(world.getName()), Collections.emptySet())
+                .contains(enchantment.getId());
     }
 
     public int getAnvilEnchantsLimit() {

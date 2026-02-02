@@ -26,11 +26,11 @@ import java.util.Set;
 public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackEnchant {
 
     private static final Set<EntityType> ENTITY_TYPES = Lists.newSet(
-        EntityType.BLAZE, EntityType.MAGMA_CUBE,
-        EntityType.WITHER_SKELETON, EntityType.GHAST, EntityType.WITHER,
-        EntityType.PIGLIN, EntityType.PIGLIN_BRUTE,
-        EntityType.ZOGLIN, EntityType.HOGLIN,
-        EntityType.STRIDER, EntityType.ZOMBIFIED_PIGLIN
+            EntityType.BLAZE, EntityType.MAGMA_CUBE,
+            EntityType.WITHER_SKELETON, EntityType.GHAST, EntityType.WITHER,
+            EntityType.PIGLIN, EntityType.PIGLIN_BRUTE,
+            EntityType.ZOGLIN, EntityType.HOGLIN,
+            EntityType.STRIDER, EntityType.ZOMBIFIED_PIGLIN
     );
 
     private boolean  multiplier;
@@ -43,13 +43,13 @@ public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackE
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.multiplier = ConfigValue.create("BaneOfNetherspawn.Damage.Multiplier",
-            false,
-            "When 'true' multiplies the damage. When 'false' sums plain values."
+                false,
+                "当为 'true' 时：按倍率方式计算伤害（用系数乘上原伤害）。当为 'false' 时：直接在原伤害基础上增加固定值。"
         ).read(config);
 
         this.damageMod = Modifier.load(config, "BaneOfNetherspawn.Damage.Amount",
-            Modifier.addictive(0.75).perLevel(0.25).capacity(1000D),
-            "Amount of additional damage."
+                Modifier.addictive(0.75).perLevel(0.25).capacity(1000D),
+                "额外伤害数值。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDamageAmount(level)));
@@ -71,6 +71,9 @@ public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackE
 
         double damageEvent = event.getDamage();
         double damageAdd = this.getDamageAmount(level);
+
+        // multiplier=true：伤害 = 原伤害 * damageAdd
+        // multiplier=false：伤害 = 原伤害 + damageAdd
         event.setDamage(this.multiplier ? damageEvent * damageAdd : damageEvent + damageAdd);
 
         if (this.hasVisualEffects()) {

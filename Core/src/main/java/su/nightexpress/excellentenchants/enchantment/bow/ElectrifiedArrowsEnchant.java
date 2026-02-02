@@ -43,8 +43,8 @@ public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEn
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.damageAmount = Modifier.load(config, "Electrified.DamageAmount",
-            Modifier.addictive(1.25).perLevel(0.25).capacity(1000D),
-            "Sets additional damage caused by enchantment's effect."
+                Modifier.addictive(1.25).perLevel(0.25).capacity(1000D),
+                "设置该附魔效果造成的额外伤害值。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDamage(level)));

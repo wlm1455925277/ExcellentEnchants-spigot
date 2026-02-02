@@ -35,7 +35,7 @@ import java.nio.file.Path;
 public class CutterEnchant extends GameEnchantment implements AttackEnchant {
 
     private final ConfigProperty<Boolean> ignoreMythicMobs = ConfigProperty.of(ConfigTypes.BOOLEAN, "Cutter.Ignore-MythicMobs", false,
-        "Whether enchantment has effect on mobs from the MythicMobs plugin.");
+            "该附魔是否对 MythicMobs 插件生成的怪物生效。");
 
     private Modifier durabilityReduction;
     private boolean  allowPlayers;
@@ -49,16 +49,16 @@ public class CutterEnchant extends GameEnchantment implements AttackEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.durabilityReduction = Modifier.load(config, "Cutter.Durability_Reduction",
-            Modifier.addictive(0).perLevel(0.01).capacity(1D),
-            "Amount (in percent) of how much item durability will be reduced.");
+                Modifier.addictive(0).perLevel(0.01).capacity(1D),
+                "降低耐久度的比例（百分比）。");
 
         this.allowPlayers = ConfigValue.create("Cutter.Allow_Players",
-            true,
-            "Sets whether or not this enchantment will have effect on players.").read(config);
+                true,
+                "是否允许该附魔对玩家生效。").read(config);
 
         this.allowMobs = ConfigValue.create("Cutter.Allow_Mobs",
-            true,
-            "Sets whether or not this enchantment will have effect on mobs.").read(config);
+                true,
+                "是否允许该附魔对怪物生效。").read(config);
 
         this.ignoreMythicMobs.loadWithDefaults(config);
 

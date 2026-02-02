@@ -42,8 +42,8 @@ public class VampiricArrowsEnchant extends GameEnchantment implements ArrowEncha
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.healAmount = Modifier.load(config, "Vampire.Heal_Amount",
-            Modifier.addictive(1).perLevel(0.5).capacity(5),
-            "Amount of hearts to be restore."
+                Modifier.addictive(1).perLevel(0.5).capacity(5),
+                "命中时为射手恢复的生命值（单位：❤）。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getHealAmount(level)));

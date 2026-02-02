@@ -39,13 +39,13 @@ public class ThunderEnchant extends GameEnchantment implements AttackEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.thunderstormOnly = ConfigValue.create("Thunder.During_Thunderstorm_Only",
-            false,
-            "Sets whether or not enchantment will have effect only during thunderstorm in the world."
+                false,
+                "设置该附魔是否仅在世界处于雷暴天气时才生效。"
         ).read(config);
 
         this.damageModifier = Modifier.load(config, "Thunder.Damage_Modifier",
-            Modifier.addictive(1.25).perLevel(0.25).capacity(1000D),
-            "Sets additional damage caused by enchantment's effect."
+                Modifier.addictive(1.25).perLevel(0.25).capacity(1000D),
+                "设置该附魔效果造成的额外伤害。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDamage(level)));

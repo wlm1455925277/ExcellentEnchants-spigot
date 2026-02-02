@@ -31,14 +31,19 @@ public class BomberEnchant extends GameEnchantment implements BowEnchant {
     public BomberEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
-        this.addComponent(EnchantComponent.CHARGES, Charges.custom(Modifier.addictive(50).perLevel(10).build(), 1, 1, NightItem.fromType(Material.TNT)));
+        this.addComponent(EnchantComponent.CHARGES, Charges.custom(
+                Modifier.addictive(50).perLevel(10).build(),
+                1, 1,
+                NightItem.fromType(Material.TNT)
+        ));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fuseTicks = Modifier.load(config, "Bomber.Fuse_Ticks",
-            Modifier.addictive(40).perLevel(10).capacity(200),
-            "Sets TNT fuse ticks.");
+                Modifier.addictive(40).perLevel(10).capacity(200),
+                "设置 TNT 的引信时间（单位：tick，20 tick = 1 秒）。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_TIME, level -> NumberUtil.format((double) this.getFuseTicks(level) / 20D));
     }

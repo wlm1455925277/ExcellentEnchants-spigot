@@ -31,12 +31,14 @@ public class SaturationEnchant extends GameEnchantment implements PassiveEnchant
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.feedAmount = Modifier.load(config, "Saturation.Amount",
-            Modifier.addictive(0).perLevel(1).capacity(5),
-            "Amount of food points to restore.");
+                Modifier.addictive(0).perLevel(1).capacity(5),
+                "每次触发恢复的饥饿值（食物点数）。"
+        );
 
         this.maxFoodLevel = Modifier.load(config, "Saturation.Max_Food_Level",
-            Modifier.addictive(20),
-            "Max. food level where saturation stops.");
+                Modifier.addictive(20),
+                "“饱和”停止生效的最大饥饿值（达到/超过该值则不再恢复）。"
+        );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getFeedAmount(level)));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_MAX, level -> NumberUtil.format(this.getMaxFoodLevel(level)));

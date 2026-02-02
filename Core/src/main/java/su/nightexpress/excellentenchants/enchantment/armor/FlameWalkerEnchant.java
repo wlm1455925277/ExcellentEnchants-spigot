@@ -52,13 +52,13 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.radius = Modifier.load(config, "FlameWalker.Radius",
-            Modifier.addictive(1).perLevel(1).capacity(16),
-            "Square radius around the block to transform into magma block."
+                Modifier.addictive(1).perLevel(1).capacity(16),
+                "将脚下周围的岩浆方块转化为岩浆块（MAGMA_BLOCK）的范围半径（圆形判定）。"
         );
 
         this.decayTime = Modifier.load(config, "FlameWalker.Block_Decay",
-            Modifier.addictive(8).perLevel(1).capacity(15),
-            "Sets life time for magma blocks before turning back into lava."
+                Modifier.addictive(8).perLevel(1).capacity(15),
+                "岩浆块的存活时间（秒）：到时间后会变回岩浆（LAVA）。"
         );
     }
 
@@ -125,7 +125,7 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
         for (Block block : this.getCircleBlocks(bukkitEntity, radius)) {
             if (block.getType() != Material.LAVA) continue;
             if (!(block.getBlockData() instanceof Levelled levelled)) continue;
-            if (levelled.getLevel() != 0) continue; // Only 'source' (full) lava blocks can be affected.
+            if (levelled.getLevel() != 0) continue; // 仅“源岩浆”（满格/静止）会被影响。
 
             Block above = block.getRelative(BlockFace.UP);
             if (!above.isEmpty()) continue;

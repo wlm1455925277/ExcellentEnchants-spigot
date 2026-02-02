@@ -33,12 +33,13 @@ public class VillageDefenderEnchant extends GameEnchantment implements AttackEnc
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.damageAmount = Modifier.load(config, "VillageDefender.Damage",
-            Modifier.addictive(0.5).perLevel(0.5).capacity(1000D),
-            "Amount of additional damage.");
+                Modifier.addictive(0.5).perLevel(0.5).capacity(1000D),
+                "额外增加的伤害数值。"
+        );
 
         this.damageMultiplier = ConfigValue.create("VillageDefender.Multiplier",
-            false,
-            "When 'true' the 'Damage.Formula' will work as a multiplier to the original damage."
+                false,
+                "当为 true 时，上面的伤害数值将作为“对原始伤害的倍率”来计算。"
         ).read(config);
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAddict(level)));

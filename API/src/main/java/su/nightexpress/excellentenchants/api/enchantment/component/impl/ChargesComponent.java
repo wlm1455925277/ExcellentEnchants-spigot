@@ -21,29 +21,29 @@ public class ChargesComponent implements EnchantComponent<Charges> {
     @NotNull
     public Charges read(@NotNull FileConfig config, @NotNull Charges defaultValue) {
         Modifier maxAmount = Modifier.load(config, "Charges.Max_Amount",
-            defaultValue.getMaxAmount(),
-            "Maximum amount of charges for the enchantment."
+                defaultValue.getMaxAmount(),
+                "该附魔可拥有的最大充能次数。"
         );
 
         int consumeAmount = ConfigValue.create("Charges.Consume_Amount",
-            defaultValue.getConsumeAmount(),
-            "Controls how many charges consumed when enchantment is triggered."
+                defaultValue.getConsumeAmount(),
+                "控制该附魔每次触发时消耗的充能次数。"
         ).read(config);
 
         int rechargeAmount = ConfigValue.create("Charges.Recharge_Amount",
-            defaultValue.getRechargeAmount(),
-            "Controls how many charges added per fuel item."
+                defaultValue.getRechargeAmount(),
+                "控制每消耗 1 个燃料物品时恢复的充能次数。"
         ).read(config);
 
         boolean customFuelEnabled = ConfigValue.create("Charges.CustomFuel.Enabled",
-            defaultValue.isCustomFuelEnabled(),
-            "Controls if custom fuel item should be used for this enchantment."
+                defaultValue.isCustomFuelEnabled(),
+                "控制该附魔是否使用自定义燃料物品进行充能。"
         ).read(config);
 
         NightItem customFuelItem = ConfigValue.create("Charges.CustomFuel.Item",
-            defaultValue.getCustomFuelItem(),
-            "Custom fuel item.",
-            EnchantsPlaceholders.URL_WIKI_ITEMS
+                defaultValue.getCustomFuelItem(),
+                "自定义燃料物品。",
+                EnchantsPlaceholders.URL_WIKI_ITEMS
         ).read(config);
 
         return new Charges(maxAmount, consumeAmount, rechargeAmount, customFuelEnabled, customFuelItem);

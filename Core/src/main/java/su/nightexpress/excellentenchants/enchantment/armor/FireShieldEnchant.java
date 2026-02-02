@@ -39,13 +39,13 @@ public class FireShieldEnchant extends GameEnchantment implements DefendEnchant 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireDuration = Modifier.load(config, "FireShield.Duration",
-            Modifier.addictive(4).perLevel(1).capacity(10),
-            "Sets the fire duration (in seconds)."
+                Modifier.addictive(4).perLevel(1).capacity(10),
+                "设置点燃持续时间（单位：秒）。"
         );
 
         this.addFireImmune = ConfigValue.create("FireShield.AddResistance",
-            true,
-            "Controls whether Fire Resistance effect should be added to the enchantment's wearer."
+                true,
+                "是否给附魔穿戴者添加“抗火”效果（Fire Resistance）。"
         ).read(config);
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(level)));

@@ -25,26 +25,26 @@ public class Config extends AbstractConfig {
     }
 
     private final ConfigProperty<Boolean> featuresEnchantTooltip = this.addProperty(ConfigTypes.BOOLEAN, "Modules.EnchantTooltip",
-        true,
-        "When 'true', adds the enchantment description to item lore under enchantment names."
+            true,
+            "当为 'true' 时，会在物品 Lore 中的附魔名称下方显示附魔描述。"
     );
 
     public static final ConfigValue<Boolean> CHARGES_ENABLED = ConfigValue.create("Charges.Enabled",
-        false,
-        "Enables the Charges feature: " + WIKI_CHRAGES
+            false,
+            "启用“充能/次数（Charges）”功能：" + WIKI_CHRAGES
     );
 
     public static final ConfigValue<Boolean> CHARGES_FUEL_IGNORE_META = ConfigValue.create("Charges.Fuel.Ignore_Meta",
-        false,
-        "Controls if item meta (such as display name, lore, model data, etc.) should be ignored when checks if item is valid fuel.",
-        "[Default is false]"
+            false,
+            "控制在判断燃料物品是否有效时，是否忽略物品 Meta（例如：显示名称、Lore、模型数据等）。",
+            "[默认值为 false]"
     );
 
     public static final ConfigValue<NightItem> CHARGES_FUEL_ITEM = ConfigValue.create("Charges.Fuel.Item",
-        NightItem.fromType(Material.LAPIS_LAZULI),
-        "Default item used to fuel enchantments on anvils.",
-        "Enchantments can have their own custom fuel items.",
-        URL_WIKI_ITEMS
+            NightItem.fromType(Material.LAPIS_LAZULI),
+            "用于在铁砧上为附魔充能的默认燃料物品。",
+            "每个附魔也可以单独配置自己的自定义燃料物品。",
+            URL_WIKI_ITEMS
     );
 
     public boolean isEnchantTooltipEnabled() {

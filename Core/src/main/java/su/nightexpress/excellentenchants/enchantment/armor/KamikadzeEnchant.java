@@ -36,11 +36,16 @@ public class KamikadzeEnchant extends GameEnchantment implements DeathEnchant, R
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.onResurrect = ConfigValue.create("Kamikadze.Apply_On_Resurrect",
-            true,
-            "Sets whether or not enchantment will trigger on resurrect (when a totem is used)."
+                true,
+                "是否在“复活”（使用不死图腾）时也触发该附魔。"
         ).read(config);
 
-        this.power = Modifier.load(config, "Kamikadze.Explosion_Power", Modifier.addictive(1).perLevel(1).capacity(5), "Explosion power.");
+        this.power = Modifier.load(
+                config,
+                "Kamikadze.Explosion_Power",
+                Modifier.addictive(1).perLevel(1).capacity(5),
+                "爆炸威力。"
+        );
     }
 
     public boolean isOnResurrect() {

@@ -38,15 +38,18 @@ public class VampireEnchant extends GameEnchantment implements AttackEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.healAmount = Modifier.load(config, "Vampire.Amount",
-            Modifier.addictive(0.25).perLevel(0.25).capacity(10),
-            "Amount of health to be restored for attacker.");
+                Modifier.addictive(0.25).perLevel(0.25).capacity(10),
+                "攻击者将恢复的生命值数量。"
+        );
 
         this.healMultiplier = ConfigValue.create("Vampire.Multiplier",
-            false,
-            "When 'true', the option above will work as a multiplier of the inflicted damage."
+                false,
+                "当为 true 时，上面的数值将作为“造成最终伤害”的倍率来计算治疗量。"
         ).read(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.isHealMultiplier() ? getHealAmount(level) * 100D : getHealAmount(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level ->
+                NumberUtil.format(this.isHealMultiplier() ? getHealAmount(level) * 100D : getHealAmount(level))
+        );
     }
 
     public double getHealAmount(int level) {

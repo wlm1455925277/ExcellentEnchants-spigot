@@ -51,7 +51,7 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
     private int[]        enchantSlots;
 
     public EnchantsMenu(@NotNull EnchantsPlugin plugin) {
-        super(plugin, MenuType.GENERIC_9X4, BLACK.wrap("Custom Enchantments"));
+        super(plugin, MenuType.GENERIC_9X4, BLACK.wrap("自定义附魔"));
         this.levelKey = new NamespacedKey(plugin, "list_display_level");
 
         this.load(FileConfig.loadOrExtract(plugin, EnchantsFiles.DIR_MENU, FILE_NAME));
@@ -74,9 +74,9 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
 
         autoFill.setSlots(this.enchantSlots);
         autoFill.setItems(EnchantRegistry.getRegistered().stream()
-            .filter(Predicate.not(CustomEnchantment::isHiddenFromList))
-            .sorted(Comparator.comparing(data -> NightMessage.stripTags(data.getDisplayName())))
-            .toList()
+                .filter(Predicate.not(CustomEnchantment::isHiddenFromList))
+                .sorted(Comparator.comparing(data -> NightMessage.stripTags(data.getDisplayName())))
+                .toList()
         );
         autoFill.setItemCreator(enchantmentData -> this.buildEnchantIcon(enchantmentData, 1));
         autoFill.setItemClick(enchantmentData -> (viewer1, event) -> {
@@ -105,10 +105,12 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
             for (String line : this.enchantLoreConflicts) {
                 if (line.contains(GENERIC_NAME)) {
                     enchant.getDefinition().getExclusiveSet().stream()
-                        .map(NightKey::key)
-                        .map(NightKey::toBukkit)
-                        .map(key -> BukkitThing.getByKey(RegistryType.ENCHANTMENT, key)).filter(Objects::nonNull).map(LangUtil::getSerializedName)
-                        .forEach(conf -> conflicts.add(line.replace(GENERIC_NAME, conf)));
+                            .map(NightKey::key)
+                            .map(NightKey::toBukkit)
+                            .map(key -> BukkitThing.getByKey(RegistryType.ENCHANTMENT, key))
+                            .filter(Objects::nonNull)
+                            .map(LangUtil::getSerializedName)
+                            .forEach(conf -> conflicts.add(line.replace(GENERIC_NAME, conf)));
                     continue;
                 }
                 conflicts.add(line);
@@ -116,18 +118,18 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
         }
 
         List<String> charges = Replacer.create()
-            .replace(GENERIC_AMOUNT, () -> NumberUtil.format(enchant.getCharges().getMaxAmount(level)))
-            .replace(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(enchant.getFuel()))
-            .apply(enchant.isChargeable() ? this.enchantLoreCharges : Collections.emptyList());
+                .replace(GENERIC_AMOUNT, () -> NumberUtil.format(enchant.getCharges().getMaxAmount(level)))
+                .replace(GENERIC_ITEM, () -> ItemUtil.getNameSerialized(enchant.getFuel()))
+                .apply(enchant.isChargeable() ? this.enchantLoreCharges : Collections.emptyList());
 
         return this.enchantIcon.copy().hideAllComponents()
-            .setDisplayName(this.enchantName)
-            .setLore(this.enchantLoreMain)
-            .replacement(replacer -> replacer
-                .replace(CHARGES, charges)
-                .replace(CONFLICTS, conflicts)
-                .replace(enchant.replacePlaceholders(level))
-            );
+                .setDisplayName(this.enchantName)
+                .setLore(this.enchantLoreMain)
+                .replacement(replacer -> replacer
+                        .replace(CHARGES, charges)
+                        .replace(CONFLICTS, conflicts)
+                        .replace(enchant.replacePlaceholders(level))
+                );
     }
 
     @Override
@@ -135,39 +137,37 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
         this.enchantIcon = ConfigValue.create("Enchantment.Icon", new NightItem(Material.ENCHANTED_BOOK)).read(config);
 
         this.enchantName = ConfigValue.create("Enchantment.Name",
-            LIGHT_YELLOW.wrap(BOLD.wrap(ENCHANTMENT_NAME + " " + ENCHANTMENT_LEVEL))
+                LIGHT_YELLOW.wrap(BOLD.wrap(ENCHANTMENT_NAME + " " + ENCHANTMENT_LEVEL))
         ).read(config);
 
         this.enchantLoreMain = ConfigValue.create("Enchantment.Lore.Main",
-            Lists.newList(
-                ENCHANTMENT_DESCRIPTION_REPLACED,
-                DARK_GRAY.wrap("(click to switch levels)"),
-                EMPTY_IF_ABOVE,
-                LIGHT_YELLOW.wrap(BOLD.wrap("Info:")),
-                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Applies to: ") + ENCHANTMENT_FIT_ITEM_TYPES),
-                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Levels: ") + ENCHANTMENT_LEVEL_MIN + LIGHT_GRAY.wrap(" - ") + ENCHANTMENT_LEVEL_MAX),
-                EMPTY_IF_BELOW,
-                CHARGES,
-                EMPTY_IF_BELOW,
-                CONFLICTS
-            )).read(config);
+                Lists.newList(
+                        ENCHANTMENT_DESCRIPTION_REPLACED,
+                        DARK_GRAY.wrap("(点击切换等级)"),
+                        EMPTY_IF_ABOVE,
+                        LIGHT_YELLOW.wrap(BOLD.wrap("信息：")),
+                        LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("适用物品：") + ENCHANTMENT_FIT_ITEM_TYPES),
+                        LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("等级：") + ENCHANTMENT_LEVEL_MIN + LIGHT_GRAY.wrap(" - ") + ENCHANTMENT_LEVEL_MAX),
+                        EMPTY_IF_BELOW,
+                        CHARGES,
+                        EMPTY_IF_BELOW,
+                        CONFLICTS
+                )).read(config);
 
         this.enchantLoreConflicts = ConfigValue.create("Enchantment.Lore.Conflicts",
-            Lists.newList(
-                LIGHT_RED.wrap(BOLD.wrap("Conflicts:")),
-                LIGHT_RED.wrap("✘ ") + LIGHT_GRAY.wrap(GENERIC_NAME)
-            )).read(config);
+                Lists.newList(
+                        LIGHT_RED.wrap(BOLD.wrap("互斥附魔：")),
+                        LIGHT_RED.wrap("✘ ") + LIGHT_GRAY.wrap(GENERIC_NAME)
+                )).read(config);
 
         this.enchantLoreCharges = ConfigValue.create("Enchantment.Lore.Charges",
-            Lists.newList(
-                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Charges: ") + GENERIC_AMOUNT + "⚡" + LIGHT_GRAY.wrap(" (" + WHITE.wrap(GENERIC_ITEM) + ")"))
-            )).read(config);
+                Lists.newList(
+                        LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("充能：") + GENERIC_AMOUNT + "⚡" + LIGHT_GRAY.wrap("（" + WHITE.wrap(GENERIC_ITEM) + "）"))
+                )).read(config);
 
         this.enchantSlots = ConfigValue.create("Enchantment.Slots", IntStream.range(0, 27).toArray()).read(config);
-
 
         loader.addDefaultItem(MenuItem.buildNextPage(this, 35));
         loader.addDefaultItem(MenuItem.buildPreviousPage(this, 27));
     }
 }
-

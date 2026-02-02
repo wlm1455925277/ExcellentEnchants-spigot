@@ -67,13 +67,14 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
 
             this.handler = entry.getValue().create(this);
             this.handler.setup();
-            this.plugin.info("Using tooltip handler: " + entry.getKey());
+            this.plugin.info("正在使用附魔提示处理器：" + entry.getKey());
             break;
         }
 
         if (this.handler == null) {
-            this.plugin.error("No compatible enchantment tooltip provider found. Please install one of the following plugins for the feature to work: [%s]"
-                .formatted(String.join(", ", this.factoryMap.keySet()))
+            this.plugin.error(
+                    "未找到兼容的附魔提示（Tooltip）提供者。请安装以下任一插件以启用该功能：[%s]"
+                            .formatted(String.join(", ", this.factoryMap.keySet()))
             );
         }
     }
@@ -118,18 +119,18 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
         String format = enchantment.isChargeable() ? this.settings.getTooltipFormatWithCharges() : this.settings.getTooltipFormat();
 
         PlaceholderContext context = PlaceholderContext.builder()
-            .with(EnchantsPlaceholders.GENERIC_DESCRIPTION, () -> String.join("\n", enchantment.getDescription(level)))
-            .with(EnchantsPlaceholders.GENERIC_NAME, enchantment::getDisplayName)
-            .with(EnchantsPlaceholders.GENERIC_CHARGES, () -> {
-                if (!enchantment.isChargeable() || charges < 0) return "";
+                .with(EnchantsPlaceholders.GENERIC_DESCRIPTION, () -> String.join("\n", enchantment.getDescription(level)))
+                .with(EnchantsPlaceholders.GENERIC_NAME, enchantment::getDisplayName)
+                .with(EnchantsPlaceholders.GENERIC_CHARGES, () -> {
+                    if (!enchantment.isChargeable() || charges < 0) return "";
 
-                int maxCharges = enchantment.getMaxCharges(level);
-                int percent = (int) Math.ceil((double) charges / (double) maxCharges * 100D);
-                ChargesFormat chargesFormat = this.settings.getTooltipChargesFormat(percent);
+                    int maxCharges = enchantment.getMaxCharges(level);
+                    int percent = (int) Math.ceil((double) charges / (double) maxCharges * 100D);
+                    ChargesFormat chargesFormat = this.settings.getTooltipChargesFormat(percent);
 
-                return chargesFormat == null ? "" : chargesFormat.getFormatted(charges);
-            })
-            .build();
+                    return chargesFormat == null ? "" : chargesFormat.getFormatted(charges);
+                })
+                .build();
 
         return context.apply(format);
     }

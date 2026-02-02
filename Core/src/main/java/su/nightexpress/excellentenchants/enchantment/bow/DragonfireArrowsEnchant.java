@@ -48,13 +48,13 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.duration = Modifier.load(config, "Dragonfire.Duration",
-            Modifier.addictive(40).perLevel(20).capacity(60 * 20),
-            "Dragonfire cloud effect duration (in ticks). 20 ticks = 1 second."
+                Modifier.addictive(40).perLevel(20).capacity(60 * 20),
+                "龙息云雾持续时间（单位：tick，20 tick = 1 秒）。"
         );
 
         this.radius = Modifier.load(config, "Dragonfire.Radius",
-            Modifier.addictive(0).perLevel(1).capacity(5),
-            "Dragonfire cloud effect radius."
+                Modifier.addictive(0).perLevel(1).capacity(5),
+                "龙息云雾的影响半径。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(level) / 20D));
@@ -99,7 +99,7 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
                              @Nullable BlockFace hitFace,
                              int level) {
 
-        // There are some tweaks to respect protection plugins by using event call.
+        // 为了兼容/尊重保护类插件（通过触发事件来让其它插件有机会取消/拦截），这里做了一些处理。
         ItemStack itemStack = new ItemStack(Material.LINGERING_POTION);
         ItemUtil.editMeta(itemStack, PotionMeta.class, potionMeta -> {
             potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 20, 0), true);

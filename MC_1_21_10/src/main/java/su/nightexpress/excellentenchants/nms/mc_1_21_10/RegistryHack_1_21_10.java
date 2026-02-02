@@ -177,7 +177,7 @@ public class RegistryHack_1_21_10 implements RegistryHack {
         ResourceKey<Enchantment> enchantKey = customEnchantKey(customEnchantment.getId());
         Enchantment enchantment = ENCHANTS.getValue(enchantKey);
         if (enchantment == null) {
-            this.plugin.error(customEnchantment.getId() + ": Could not set exclusive item list. Enchantment is not registered.");
+            this.plugin.error(customEnchantment.getId() + ": 无法设置互斥附魔列表：该附魔尚未注册。");
             return;
         }
 
@@ -301,7 +301,7 @@ public class RegistryHack_1_21_10 implements RegistryHack {
 
         HolderSet.Named<T> holders = registry.get(tagKey).orElse(null);
         if (holders == null) {
-            this.plugin.warn(tagKey + ": Could not modify HolderSet. HolderSet is NULL.");
+            this.plugin.warn(tagKey + ": 无法修改 HolderSet：HolderSet 为 NULL。");
             return;
         }
 

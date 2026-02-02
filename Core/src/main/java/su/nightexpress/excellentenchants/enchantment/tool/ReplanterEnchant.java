@@ -56,13 +56,13 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.replantOnRightClick = ConfigValue.create("Replanter.On_Right_Click",
-            true,
-            "When 'true', player will be able to replant crops when right-clicking farmland blocks."
+                true,
+                "为 true 时：玩家右键耕地/灵魂沙（下方方块）且上方为空时，自动从背包取出对应种子并种下。"
         ).read(config);
 
         this.replantOnPlantBreak = ConfigValue.create("Replanter.On_Plant_Break",
-            true,
-            "When 'true', crops will be automatically replanted when player break plants with enchanted tool in hand."
+                true,
+                "为 true 时：玩家使用带此附魔的工具破坏成熟作物后，会自动从背包消耗 1 个种子并补种（重置生长阶段）。"
         ).read(config);
     }
 
@@ -102,28 +102,28 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
         if (!(entity instanceof Player player)) return false;
         if (!this.isReplantOnRightClick()) return false;
 
-        // Check for a event hand. We dont want to trigger it twice.
+        // 只处理主手触发，避免同一交互被触发两次
         if (event.getHand() != EquipmentSlot.HAND) return false;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return false;
 
-        // Check if player holds seeds to plant them by offhand interaction.
+        // 若副手本来就拿着可种植的种子，则让原版“副手种植”优先生效，不触发本附魔
         ItemStack off = player.getInventory().getItemInOffHand();
         if (!off.getType().isAir() && CROP_MAP.containsKey(off.getType())) return false;
 
-        // Check if clicked block is a farmland.
+        // 只能对耕地/灵魂沙触发
         Block blockGround = event.getClickedBlock();
         if (blockGround == null) return false;
         if (blockGround.getType() != Material.FARMLAND && blockGround.getType() != Material.SOUL_SAND) return false;
 
-        // Check if someting is already growing on the farmland.
+        // 上方必须为空（没有作物/方块）
         Block blockPlant = blockGround.getRelative(BlockFace.UP);
         if (!blockPlant.isEmpty()) return false;
 
-        // Get the first crops from player's inventory and plant them.
+        // 从玩家背包里寻找可用种子并种植（耕地种普通作物，灵魂沙种下界疣）
         for (var entry : CROP_MAP.entrySet()) {
             Material seed = entry.getKey();
             if (seed == Material.NETHER_WART && blockGround.getType() == Material.SOUL_SAND
-                || seed != Material.NETHER_WART && blockGround.getType() == Material.FARMLAND) {
+                    || seed != Material.NETHER_WART && blockGround.getType() == Material.FARMLAND) {
                 if (this.takeSeeds(player, seed)) {
                     VanillaSound.of(seed == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT).play(player);
                     player.swingMainHand();
@@ -142,14 +142,14 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
 
         Block blockPlant = event.getBlock();
 
-        // Check if broken block is supported crop(s).
+        // 仅支持 CROP_MAP 中的作物类型
         if (!CROP_MAP.containsKey(blockPlant.getBlockData().getPlacementMaterial())) return false;
 
-        // Check if broken block is actually can grow.
+        // 必须是可生长的作物方块
         BlockData dataPlant = blockPlant.getBlockData();
         if (!(dataPlant instanceof Ageable plant)) return false;
 
-        // Replant the gathered crops with a new one.
+        // 从背包消耗 1 个种子并补种（下 tick 执行，避免与掉落/破坏冲突）
         if (this.takeSeeds(player, dataPlant.getPlacementMaterial())) {
             plugin.runTask(() -> {
                 blockPlant.setType(plant.getMaterial());

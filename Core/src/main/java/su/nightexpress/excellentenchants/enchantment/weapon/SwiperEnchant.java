@@ -32,8 +32,8 @@ public class SwiperEnchant extends GameEnchantment implements AttackEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.xpAmount = Modifier.load(config, "Swiper.XP_Amount",
-            Modifier.addictive(0).perLevel(1).capacity(10),
-            "Amount of XP to be stolen on hit.");
+                Modifier.addictive(0).perLevel(1).capacity(10),
+                "每次命中时可偷取的经验值数量。");
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getXPAmount(level)));
     }

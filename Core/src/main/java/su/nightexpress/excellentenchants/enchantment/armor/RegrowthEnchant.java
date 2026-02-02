@@ -37,18 +37,18 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.minHealth = Modifier.load(config, "Regrowth.Min_Health",
-            Modifier.addictive(0.5),
-            "Min. health required for the regrowth effect."
+                Modifier.addictive(0.5),
+                "触发“再生”效果所需的最低生命值（低于该值不会触发）。"
         );
 
         this.maxHealth = Modifier.load(config, "Regrowth.Max_Health",
-            Modifier.addictive(20),
-            "Max. health where the regrowth stops."
+                Modifier.addictive(20),
+                "“再生”停止生效的生命值上限（高于该值不会触发）。"
         );
 
         this.healAmount = Modifier.load(config, "Regrowth.Heal_Amount",
-            Modifier.addictive(0.1).perLevel(0.1).capacity(1D),
-            "Amount of hearts to be restored."
+                Modifier.addictive(0.1).perLevel(0.1).capacity(1D),
+                "每次触发恢复的生命值（单位：❤）。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getHealAmount(level)));
