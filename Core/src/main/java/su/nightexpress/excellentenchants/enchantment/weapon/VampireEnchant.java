@@ -82,7 +82,7 @@ public class VampireEnchant extends GameEnchantment implements AttackEnchant {
         damager.setHealth(Math.min(healthMax, healthHas + healthEvent.getAmount()));
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.HEART).play(damager.getEyeLocation(), 0.25, 0.15, 5);
+            UniParticle.of(Particle.HEART).play(damager.getEyeLocation(), 0.25, 0.15, 1);
         }
         return true;
     }

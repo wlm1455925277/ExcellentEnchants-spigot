@@ -76,8 +76,8 @@ public class ThunderEnchant extends GameEnchantment implements AttackEnchant {
         if (this.hasVisualEffects()) {
             Block block = location.getBlock().getRelative(BlockFace.DOWN);
             Location center = LocationUtil.setCenter3D(location.clone());
-            UniParticle.blockCrack(block.getType()).play(center, 0.5, 0.1, 100);
-            UniParticle.of(Particle.ELECTRIC_SPARK).play(center, 0.75, 0.05, 120);
+            UniParticle.blockCrack(block.getType()).play(center, 0.5, 0.1, 20);
+            UniParticle.of(Particle.ELECTRIC_SPARK).play(center, 0.75, 0.05, 24);
         }
 
         event.setDamage(event.getDamage() + this.getDamage(level));

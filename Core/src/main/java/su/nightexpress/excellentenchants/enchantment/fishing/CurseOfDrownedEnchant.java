@@ -1,6 +1,6 @@
 package su.nightexpress.excellentenchants.enchantment.fishing;
 
-import org.bukkit.Particle;
+// import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Drowned;
 import org.bukkit.entity.FishHook;
@@ -17,7 +17,7 @@ import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.sound.VanillaSound;
-import su.nightexpress.nightcore.util.wrapper.UniParticle;
+// import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
@@ -51,7 +51,7 @@ public class CurseOfDrownedEnchant extends GameEnchantment implements FishingEnc
         event.setCancelled(true);
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.UNDERWATER).play(hook.getLocation(), 0.75, 0.1, 50);
+            // UniParticle.of(Particle.UNDERWATER).play(hook.getLocation(), 0.75, 0.1, 50);
             VanillaSound.of(Sound.ENTITY_DROWNED_AMBIENT).play(event.getPlayer());
         }
         return true;

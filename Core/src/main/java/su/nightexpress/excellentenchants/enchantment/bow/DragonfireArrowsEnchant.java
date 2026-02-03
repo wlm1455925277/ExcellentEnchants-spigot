@@ -1,17 +1,18 @@
 package su.nightexpress.excellentenchants.enchantment.bow;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -28,8 +29,8 @@ import su.nightexpress.excellentenchants.api.enchantment.type.ArrowEnchant;
 import su.nightexpress.excellentenchants.enchantment.EnchantContext;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
+import su.nightexpress.excellentenchants.protection.ProtectionManager;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.util.ItemUtil;
 import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
@@ -49,12 +50,12 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
     protected void loadAdditional(@NotNull FileConfig config) {
         this.duration = Modifier.load(config, "Dragonfire.Duration",
                 Modifier.addictive(40).perLevel(20).capacity(60 * 20),
-                "龙息云雾持续时间（单位：tick，20 tick = 1 秒）。"
+                "龙息云雾持续时间（tick）。"
         );
 
         this.radius = Modifier.load(config, "Dragonfire.Radius",
                 Modifier.addictive(0).perLevel(1).capacity(5),
-                "龙息云雾的影响半径。"
+                "龙息云雾半径。"
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(level) / 20D));
@@ -82,14 +83,16 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
 
     @Override
     public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow arrow, int level) {
+        // 命中实体：这里不做（由 onDamage 处理，避免重复）
         if (event.getHitEntity() != null) return;
 
-        this.createCloud(shooter, arrow.getLocation(), event.getHitEntity(), event.getHitBlock(), event.getHitBlockFace(), level);
+        createCloud(shooter, arrow.getLocation(), null, event.getHitBlock(), event.getHitBlockFace(), level);
     }
 
     @Override
     public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
-        this.createCloud(shooter, victim.getLocation(), victim, null, null, level);
+        // 命中实体：在受害者位置生成
+        createCloud(shooter, victim.getLocation(), victim, null, null, level);
     }
 
     private void createCloud(@NotNull ProjectileSource shooter,
@@ -99,30 +102,45 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
                              @Nullable BlockFace hitFace,
                              int level) {
 
-        // 为了兼容/尊重保护类插件（通过触发事件来让其它插件有机会取消/拦截），这里做了一些处理。
-        ItemStack itemStack = new ItemStack(Material.LINGERING_POTION);
-        ItemUtil.editMeta(itemStack, PotionMeta.class, potionMeta -> {
-            potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 20, 0), true);
-        });
+        var world = location.getWorld();
+        if (world == null) return;
 
-        ThrownPotion potion = shooter.launchProjectile(ThrownPotion.class);
-        potion.setItem(itemStack);
-        potion.teleport(location);
+        // ✅ 只允许玩家触发（更符合 PVP / 保护插件判断）
+        if (!(shooter instanceof Player owner)) return;
 
-        AreaEffectCloud cloud = potion.getWorld().spawn(location, AreaEffectCloud.class);
+        int dur = Math.max(1, this.getFireDuration(level));
+        float rad = (float) Math.max(0D, this.getFireRadius(level));
+        if (rad <= 0.0F) return;
+
+        // ✅ 权限探测：
+        // - 命中实体：用 canAffectEntity（更贴近“PVP/伤害/影响”语义）
+        // - 命中方块/地面：用 canModifyAt（更贴近“是否允许在此处产生云/放置类效果”）
+        if (hitEntity != null) {
+            if (!ProtectionManager.canAffectEntity(owner, hitEntity)) return;
+        } else {
+            Block probe = (hitBlock != null) ? hitBlock : location.getBlock();
+            if (!ProtectionManager.canModifyAt(owner, location, probe)) return;
+        }
+
+        AreaEffectCloud cloud = world.spawn(location, AreaEffectCloud.class);
+
         cloud.clearCustomEffects();
-        cloud.setSource(shooter);
+
+        // ✅ source 用玩家（LivingEntity），保护插件识别更可靠
+        cloud.setSource(owner);
+
         cloud.setParticle(Particle.DRAGON_BREATH, 1F);
-        cloud.setRadius((float) this.getFireRadius(level));
-        cloud.setDuration(this.getFireDuration(level));
-        cloud.setRadiusPerTick((7.0F - cloud.getRadius()) / (float) cloud.getDuration());
+
+        cloud.setRadius(rad);
+        cloud.setDuration(dur);
+
+        // ✅ 半径随时间缩小（你原来的写法会越变越大）
+        cloud.setRadiusPerTick(-rad / (float) dur);
+
+        // Instant Damage 云：每次作用都很狠，保留你原设计
         cloud.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 1), true);
 
-        LingeringPotionSplashEvent splashEvent = new LingeringPotionSplashEvent(potion, hitEntity, hitBlock, hitFace, cloud);
-        plugin.getPluginManager().callEvent(splashEvent);
-        if (splashEvent.isCancelled()) {
-            cloud.remove();
-        }
-        potion.remove();
+        // ✅ 关键：打标记，让 ProtectionManager#onCloudApply 按领地/PVP过滤目标
+        ProtectionManager.markCloud(cloud, owner);
     }
 }

@@ -158,7 +158,7 @@ public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant 
         Block block = state.getBlock();
         if (this.hasVisualEffects()) {
             Location location = LocationUtil.setCenter3D(block.getLocation());
-            UniParticle.of(Particle.FLAME).play(location, 0.25, 0.05, 20);
+            UniParticle.of(Particle.FLAME).play(location, 0.25, 0.05, 4);
             this.sound.play(location);
         }
         return true;

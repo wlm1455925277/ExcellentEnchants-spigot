@@ -1,0 +1,234 @@
+# 稀有度（rarity）选项不会影响原版附魔。
+# 该选项仅用于“显示/排序”时按稀有度排序。
+
+# ==========================================
+# <gray>普通附魔</gray>
+# ==========================================
+
+protection:
+  name: "<gray>保护</gray>"
+  description: "减少受到的伤害 %placeholder%%。"
+  placeholder: "%level% * 4"
+  #max-level: 6 # 自定义最大等级，用于覆盖该附魔默认最大等级。提高通常没问题，但降低可能会导致 bug。
+  #conflicts: [] # 自定义冲突附魔列表，用于覆盖默认冲突。你可以自由增删。
+
+fire_protection:
+  name: "<gray>火焰保护</gray>"
+  description: "减少受到的火焰伤害 %damage%%，燃烧时间减少 %time%%。"
+  placeholders:
+    damage: "%level% * 8"
+    time: "%level% * 15"
+
+feather_falling:
+  name: "<gray>摔落保护</gray>"
+  description: "减少摔落伤害 %placeholder%%。"
+  placeholder: "%level% * 12"
+
+blast_protection:
+  name: "<gray>爆炸保护</gray>"
+  description: "减少爆炸伤害 %damage%%，爆炸击退降低 %knockback%%。"
+  placeholders:
+    damage: "%level% * 8"
+    knockback: "%level% * 15"
+
+projectile_protection:
+  name: "<gray>弹射物保护</gray>"
+  description: "减少弹射物伤害 %placeholder%%。"
+  placeholder: "%level% * 8"
+
+respiration:
+  name: "<gray>水下呼吸</gray>"
+  description: "水下可呼吸时间延长 %seconds% 秒，并有 %chance%% 概率无视溺水伤害。"
+  placeholders:
+    seconds: "15 * %level%"
+    chance: "%level% / (%level% + 1)"
+
+aqua_affinity:
+  name: "<gray>水下速掘</gray>"
+  description: "移除水下挖掘速度惩罚。"
+
+thorns:
+  name: "<gray>荆棘</gray>"
+  description: "有 %placeholder%% 概率将部分伤害反弹给攻击者。"
+  placeholder: "%level% * 15"
+
+depth_strider:
+  name: "<gray>深海探索者</gray>"
+  description: "减少水下移动减速 %placeholder%%。"
+  placeholder: "%level% * 33.333333"
+
+sharpness:
+  name: "<gray>锋利</gray>"
+  description: "近战额外造成 %placeholder% 点伤害。"
+  placeholder: "0.5 * %level% + 1"
+
+smite:
+  name: "<gray>亡灵杀手</gray>"
+  description: "对亡灵生物的近战伤害增加 %placeholder%。"
+  placeholder: "2.5 * %level%"
+
+bane_of_arthropods:
+  name: "<gray>节肢杀手</gray>"
+  description: "对节肢生物的近战伤害增加 %damage%，并附加最多 %seconds% 秒的缓慢 IV。"
+  placeholders:
+    damage: "2.5 * %level%"
+    seconds: "0.5 * %level%"
+
+knockback:
+  name: "<gray>击退</gray>"
+  description: "攻击击退效果增加 %placeholder%%。"
+  placeholder: "%level% * 85 + 20"
+
+fire_aspect:
+  name: "<gray>火焰附加</gray>"
+  description: "让目标燃烧 4 秒，并在每次火焰跳动时造成 %placeholder% 伤害。"
+  placeholder: "(%level% * 4) - 1"
+
+looting:
+  name: "<gray>抢夺</gray>"
+  description: "普通掉落数量上限增加 %common%，稀有掉落概率增加 %rare%%。"
+  placeholders:
+    common: "%level%"
+    rare: "%level%"
+
+# 1.21 之前
+sweeping:
+  name: "<gray>横扫之刃</gray>"
+  description: "横扫攻击伤害提升 %placeholder%%。"
+  placeholder: "%level% / (%level% + 1)"
+
+# 1.21 及以上
+sweeping_edge:
+  name: "<gray>横扫之刃</gray>"
+  description: "横扫攻击伤害提升 %placeholder%%。"
+  placeholder: "%level% / (%level% + 1)"
+
+efficiency:
+  name: "<gray>效率</gray>"
+  description: "挖掘速度提升 %placeholder%%。"
+  placeholder: "20 + 5 * %level%"
+
+silk_touch:
+  name: "<gray>精准采集</gray>"
+  description: "挖掘的方块将按原样掉落。"
+
+unbreaking:
+  name: "<gray>耐久</gray>"
+  description: "物品耐久提高 %placeholder%x。"
+  placeholder: "%level% + 1"
+
+fortune:
+  name: "<gray>时运</gray>"
+  description: "某些方块掉落提高 %placeholder%%。"
+  placeholder: "ceil(((1 / (%level% + 2)) + ((%level% + 1) / 2)) * 100 - 100)"
+
+power:
+  name: "<gray>力量</gray>"
+  description: "箭矢伤害提升 %placeholder%%。"
+  placeholder: "25 * (%level% + 1)"
+
+punch:
+  name: "<gray>冲击</gray>"
+  description: "箭矢击退距离增加 %placeholder% 格。"
+  placeholder: "3 * %level%"
+
+flame:
+  name: "<gray>火矢</gray>"
+  description: "箭矢点燃目标，造成 5 点火焰伤害。"
+
+infinity:
+  name: "<gray>无限</gray>"
+  description: "射箭时不会消耗普通箭矢。"
+
+luck_of_the_sea:
+  name: "<gray>海之眷顾</gray>"
+  description: "钓到宝藏战利品的概率提高 %placeholder%%。"
+  placeholder: "2 * %level%"
+
+lure:
+  name: "<gray>饵钓</gray>"
+  description: "钓鱼等待时间减少 %placeholder% 秒。"
+  placeholder: "%level% * 5"
+
+loyalty:
+  name: "<gray>忠诚</gray>"
+  description: "三叉戟投掷后会返回。"
+
+impaling:
+  name: "<gray>穿刺</gray>"
+  description: "对海洋生物额外造成 %placeholder% 点伤害。"
+  placeholder: "%level% * 2.5"
+
+riptide:
+  name: "<gray>激流</gray>"
+  description: "在水中或下雨时投掷三叉戟会推动玩家前进。"
+
+channeling:
+  name: "<gray>引雷</gray>"
+  description: "雷暴天气时，三叉戟落点会召唤闪电。"
+
+multishot:
+  name: "<gray>多重射击</gray>"
+  description: "一次射出 3 支箭而不是 1 支。"
+
+quick_charge:
+  name: "<gray>快速装填</gray>"
+  description: "弩的装填时间减少 %placeholder% 秒。"
+  placeholder: "%level% * 0.25"
+
+piercing:
+  name: "<gray>穿透</gray>"
+  description: "箭矢可穿透最多 %placeholder% 个实体。"
+  placeholder: "%level% + 1"
+
+density:
+  name: "<gray>致密</gray>"
+  description: "每下落 1 格，额外造成 %placeholder% 点伤害。"
+  placeholder: "0.5 * %level%"
+
+breach:
+  name: "<gray>破甲</gray>"
+  description: "降低目标护甲效果 %placeholder%%。"
+  placeholder: "15 * %level%"
+
+# 你这里的 lunge 不是原版 1.21 标准附魔名（原版重锤是 density/breach/wind_burst）。
+# 如果这是你自定义附魔：按你的获取渠道决定是否改成宝藏颜色。
+lunge:
+  name: "<gray>突进</gray>"
+  description: "使用重锤蓄力攻击时向前突进，距离随等级提升。"
+
+# ==========================================
+# <c:#279CF5>宝藏附魔</c>
+# ==========================================
+
+frost_walker:
+  name: "<c:#279CF5>冰霜行者</c>"
+  description: "<gray>将玩家周围半径 %placeholder% 格内的水变为冰。</gray>"
+  placeholder: "%level% + 2"
+
+binding_curse:
+  name: "<c:#279CF5>绑定诅咒</c>"
+  description: "<gray>物品无法从盔甲栏中取下。</gray>"
+
+mending:
+  name: "<c:#279CF5>经验修补</c>"
+  description: "<gray>拾取经验球时修复物品耐久。</gray>"
+
+vanishing_curse:
+  name: "<c:#279CF5>消失诅咒</c>"
+  description: "<gray>死亡时物品将消失。</gray>"
+
+soul_speed:
+  name: "<c:#279CF5>灵魂疾行</c>"
+  description: "<gray>在灵魂沙与灵魂土上行走速度提高 %placeholder%%。</gray>"
+  placeholder: "(%level% * 0.105) + 1.3"
+
+swift_sneak:
+  name: "<c:#279CF5>迅捷潜行</c>"
+  description: "<gray>潜行时移动减速降低 %placeholder%%。</gray>"
+  placeholder: "min(%level% * 15, 100)"
+
+wind_burst:
+  name: "<c:#279CF5>风爆</c>"
+  description: "<gray>猛击攻击的向上击退倍数提高到 %placeholder%。</gray>"
+  placeholder: "1.15 + 0.35 * %level%"

@@ -63,8 +63,8 @@ public class KamikadzeEnchant extends GameEnchantment implements DeathEnchant, R
 
         return this.plugin.getEnchantManager().createExplosion(entity, location, power, false, false, explosion -> {
             if (this.hasVisualEffects()) explosion.setOnExplode(explodeEvent -> {
-                UniParticle.of(Particle.SMOKE).play(eye, 0.5, 0.1, 60);
-                UniParticle.of(Particle.LAVA).play(eye, 1.25, 0.1, 100);
+                UniParticle.of(Particle.SMOKE).play(eye, 0.5, 0.1, 12);
+                UniParticle.of(Particle.LAVA).play(eye, 1.25, 0.1, 20);
             });
             explosion.setOnDamage(damageEvent -> {
                 if (!(damageEvent.getEntity() instanceof LivingEntity)) {

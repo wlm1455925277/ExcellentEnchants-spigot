@@ -45,7 +45,7 @@ public class WitherEnchant extends GameEnchantment implements AttackEnchant {
         if (!this.addPotionEffect(victim, level)) return false;
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.ASH).play(victim.getEyeLocation(), 0.25, 0.1, 30);
+            UniParticle.of(Particle.ASH).play(victim.getEyeLocation(), 0.25, 0.1, 6);
         }
         return true;
     }

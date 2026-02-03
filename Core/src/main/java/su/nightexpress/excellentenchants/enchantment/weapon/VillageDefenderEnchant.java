@@ -70,7 +70,7 @@ public class VillageDefenderEnchant extends GameEnchantment implements AttackEnc
         event.setDamage(damageFinal);
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.ANGRY_VILLAGER).play(victim.getEyeLocation(), 0.25, 0.1, 30);
+            UniParticle.of(Particle.ANGRY_VILLAGER).play(victim.getEyeLocation(), 0.25, 0.1, 6);
         }
         return true;
     }

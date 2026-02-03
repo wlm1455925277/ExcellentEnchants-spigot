@@ -73,7 +73,7 @@ public class FireShieldEnchant extends GameEnchantment implements DefendEnchant 
         if (damagerFireTicks >= fireTicks) return false;
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.FLAME).play(victim.getEyeLocation(), 0.5, 0.1, 35);
+            UniParticle.of(Particle.FLAME).play(victim.getEyeLocation(), 0.5, 0.1, 7);
             VanillaSound.of(Sound.ITEM_FIRECHARGE_USE).play(victim.getLocation());
         }
 

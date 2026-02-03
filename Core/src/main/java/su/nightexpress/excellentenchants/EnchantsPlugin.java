@@ -10,6 +10,7 @@ import su.nightexpress.excellentenchants.config.Perms;
 import su.nightexpress.excellentenchants.placeholder.PlaceholderHook;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
 import su.nightexpress.excellentenchants.tooltip.TooltipManager;
+import su.nightexpress.excellentenchants.protection.ProtectionManager;
 import su.nightexpress.nightcore.NightPlugin;
 import su.nightexpress.nightcore.commands.command.NightCommand;
 import su.nightexpress.nightcore.config.PluginDetails;
@@ -55,6 +56,12 @@ public class EnchantsPlugin extends NightPlugin {
     public void enable() {
         Config settings = new Config();
         settings.load(this.config);
+
+        // ✅ 初始化统一保护管理器（注册监听器一次）
+        ProtectionManager.init(this);
+
+        // Ensure bundled vanilla enchant description file is present in data folder for tooltip use.
+        this.saveResource("vanillaenchants.yml", false);
 
         if (settings.isEnchantTooltipEnabled()) {
             this.tooltipManager = new TooltipManager(this);

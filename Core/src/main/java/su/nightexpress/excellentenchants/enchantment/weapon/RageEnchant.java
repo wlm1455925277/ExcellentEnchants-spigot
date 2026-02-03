@@ -45,7 +45,7 @@ public class RageEnchant extends GameEnchantment implements AttackEnchant {
         if (!this.addPotionEffect(damager, level)) return false;
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.LAVA).play(damager.getEyeLocation(), 0.25, 0.1, 30);
+            UniParticle.of(Particle.LAVA).play(damager.getEyeLocation(), 0.25, 0.1, 6);
         }
         return true;
     }

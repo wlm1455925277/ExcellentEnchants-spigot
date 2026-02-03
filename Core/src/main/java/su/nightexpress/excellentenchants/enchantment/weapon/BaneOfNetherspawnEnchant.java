@@ -77,8 +77,8 @@ public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackE
         event.setDamage(this.multiplier ? damageEvent * damageAdd : damageEvent + damageAdd);
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.SMOKE).play(victim.getEyeLocation(), 0.25, 0.1, 20);
-            UniParticle.of(Particle.LAVA).play(victim.getEyeLocation(), 0.25, 0.1, 5);
+            UniParticle.of(Particle.SMOKE).play(victim.getEyeLocation(), 0.25, 0.1, 4);
+            UniParticle.of(Particle.LAVA).play(victim.getEyeLocation(), 0.25, 0.1, 1);
         }
 
         return true;

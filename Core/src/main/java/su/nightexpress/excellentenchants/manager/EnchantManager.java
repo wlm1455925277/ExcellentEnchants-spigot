@@ -187,7 +187,7 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
     private void tickArrowEffects() {
         this.arrowEffects.keySet().removeIf(arrow -> !arrow.isValid() || arrow.isDead());
         this.arrowEffects.forEach((arrow, effects) -> {
-            effects.forEach(particle -> particle.play(arrow.getLocation(), 0f, 0f, 10));
+            effects.forEach(particle -> particle.play(arrow.getLocation(), 0f, 0f, 2));
         });
     }
 

@@ -79,7 +79,7 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
         entity.setHealth(amount);
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.HEART).play(entity.getEyeLocation(), 0.25, 0.1, 5);
+            UniParticle.of(Particle.HEART).play(entity.getEyeLocation(), 0.25, 0.1, 1);
         }
         return true;
     }

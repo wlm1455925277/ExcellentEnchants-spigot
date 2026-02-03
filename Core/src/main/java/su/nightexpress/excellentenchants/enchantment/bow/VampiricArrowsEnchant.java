@@ -87,7 +87,7 @@ public class VampiricArrowsEnchant extends GameEnchantment implements ArrowEncha
         shooter.setHealth(Math.min(maxHealth, health + healAmount));
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.HEART).play(shooter.getEyeLocation(), 0.25f, 0.15f, 5);
+            UniParticle.of(Particle.HEART).play(shooter.getEyeLocation(), 0.25f, 0.15f, 1);
         }
     }
 }

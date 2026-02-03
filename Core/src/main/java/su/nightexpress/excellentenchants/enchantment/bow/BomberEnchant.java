@@ -2,6 +2,7 @@ package su.nightexpress.excellentenchants.enchantment.bow;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -18,6 +19,7 @@ import su.nightexpress.excellentenchants.api.enchantment.type.BowEnchant;
 import su.nightexpress.excellentenchants.enchantment.EnchantContext;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
+import su.nightexpress.excellentenchants.protection.ProtectionManager;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.NumberUtil;
 import su.nightexpress.nightcore.util.bukkit.NightItem;
@@ -68,6 +70,11 @@ public class BomberEnchant extends GameEnchantment implements BowEnchant {
         primed.setVelocity(projectile.getVelocity().multiply(event.getForce() * 1.25));
         primed.setFuseTicks(fuseTicks);
         primed.setSource(shooter);
+
+        // ✅ 标记这颗 TNT 走统一保护判定
+        Player owner = (shooter instanceof Player p) ? p : null;
+        ProtectionManager.markExplosionTnt(primed, owner);
+
         event.setProjectile(primed);
         return true;
     }

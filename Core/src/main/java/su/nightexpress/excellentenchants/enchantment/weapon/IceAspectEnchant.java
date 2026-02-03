@@ -50,8 +50,8 @@ public class IceAspectEnchant extends GameEnchantment implements AttackEnchant {
         victim.setFreezeTicks(victim.getMaxFreezeTicks());
 
         if (this.hasVisualEffects()) {
-            UniParticle.blockCrack(Material.ICE).play(victim.getEyeLocation(), 0.5, 0.1, 35);
-            UniParticle.of(Particle.CLOUD).play(victim.getEyeLocation(), 0.25, 0.1, 25);
+            UniParticle.blockCrack(Material.ICE).play(victim.getEyeLocation(), 0.5, 0.1, 7);
+            UniParticle.of(Particle.CLOUD).play(victim.getEyeLocation(), 0.25, 0.1, 5);
             VanillaSound.of(Sound.BLOCK_GLASS_BREAK).play(victim.getLocation());
         }
         return true;

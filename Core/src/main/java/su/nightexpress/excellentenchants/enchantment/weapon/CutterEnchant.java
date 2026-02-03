@@ -106,7 +106,7 @@ public class CutterEnchant extends GameEnchantment implements AttackEnchant {
         drop.getVelocity().multiply(3D);
 
         if (this.hasVisualEffects()) {
-            UniParticle.itemCrack(itemCut).play(victim.getEyeLocation(), 0.25, 0.15, 30);
+            UniParticle.itemCrack(itemCut).play(victim.getEyeLocation(), 0.25, 0.15, 6);
             VanillaSound.of(Sound.ENTITY_ITEM_BREAK).play(victim.getLocation());
         }
 

@@ -17,11 +17,13 @@ import su.nightexpress.excellentenchants.api.enchantment.type.MiningEnchant;
 import su.nightexpress.excellentenchants.enchantment.EnchantContext;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
+import su.nightexpress.excellentenchants.protection.ProtectionManager;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant {
@@ -37,16 +39,10 @@ public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.explosionPower = Modifier.load(config, "BlastMining.Explosion_Power",
-                Modifier.addictive(3).perLevel(0.75).capacity(8),
-                "爆炸威力（强度）。威力越大 = 爆炸影响的范围/方块数量越多。"
+                Modifier.addictive(3).perLevel(0.75).capacity(8)
         );
 
-        this.minBlockStrength = ConfigValue.create("BlastMining.Min_Block_Strength",
-                1.3D,
-                "触发该附魔所需的最小方块硬度值（低于该值则不生效）。",
-                "方块硬度表示用手破坏该方块所需的时间强度。",
-                "例如：石头（Stone）的硬度为 3.0。"
-        ).read(config);
+        this.minBlockStrength = ConfigValue.create("BlastMining.Min_Block_Strength", 1.3D).read(config);
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getExplosionPower(level)));
     }
@@ -56,8 +52,7 @@ public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant
     }
 
     private boolean isHardEnough(@NotNull Block block) {
-        float strength = block.getType().getHardness();
-        return (strength >= this.minBlockStrength);
+        return block.getType().getHardness() >= this.minBlockStrength;
     }
 
     @Override
@@ -71,21 +66,23 @@ public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant
         if (!(entity instanceof Player player)) return false;
         if (EnchantsUtils.isBusy()) return false;
 
-        Block block = event.getBlock();
-        if (!this.isHardEnough(block)) return false;
+        Block origin = event.getBlock();
+        if (!this.isHardEnough(origin)) return false;
 
         float power = (float) this.getExplosionPower(level);
 
-        return this.plugin.getEnchantManager().createExplosion(player, block.getLocation(), power, false, true, explosion -> {
+        return this.plugin.getEnchantManager().createExplosion(player, origin.getLocation(), power, false, true, explosion -> {
             explosion.setOnDamage(damageEvent -> damageEvent.setCancelled(true));
             explosion.setOnExplode(explodeEvent -> {
-                List<Block> blockList = explodeEvent.blockList();
-                blockList.forEach(explodedBlock -> {
-                    if (explodedBlock.getLocation().equals(block.getLocation())) return;
+                List<Block> blocks = new ArrayList<>(explodeEvent.blockList());
+                explodeEvent.blockList().clear();
 
-                    EnchantsUtils.safeBusyBreak(player, explodedBlock);
-                });
-                blockList.clear();
+                for (Block b : blocks) {
+                    if (b.getLocation().equals(origin.getLocation())) continue;
+                    if (!ProtectionManager.canModifyAt(player, b.getLocation(), b)) continue;
+
+                    EnchantsUtils.safeBusyBreak(player, b);
+                }
             });
         });
     }

@@ -48,7 +48,7 @@ public class ConfusionEnchant extends GameEnchantment implements AttackEnchant {
         if (!this.addPotionEffect(victim, level)) return false;
 
         if (this.hasVisualEffects()) {
-            UniParticle.itemCrack(Material.ROTTEN_FLESH).play(victim.getEyeLocation(), 0.25, 0.1, 30);
+            UniParticle.itemCrack(Material.ROTTEN_FLESH).play(victim.getEyeLocation(), 0.25, 0.1, 6);
         }
 
         return true;

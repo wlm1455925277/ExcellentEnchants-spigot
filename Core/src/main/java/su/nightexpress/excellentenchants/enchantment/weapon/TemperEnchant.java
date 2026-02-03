@@ -21,36 +21,53 @@ import java.nio.file.Path;
 
 public class TemperEnchant extends GameEnchantment implements AttackEnchant {
 
+    /** 每一档增加的伤害百分比（%） */
     private Modifier damageAmount;
-    private Modifier damageStep;
 
-    public TemperEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    /** 每损失 X% 最大生命值触发一档（%） */
+    private Modifier damageStepPercent;
+
+    public TemperEnchant(@NotNull EnchantsPlugin plugin,
+                         @NotNull EnchantManager manager,
+                         @NotNull Path file,
+                         @NotNull EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
+
+        // 目标：每损失 2% 最大生命值 -> 伤害 +1%
+        // damageAmount：默认 1%，不随等级增长（想随等级增再改 perLevel）
         this.damageAmount = Modifier.load(config, "Temper.Damage_Amount",
-                Modifier.addictive(0).perLevel(5).capacity(100),
-                "额外伤害（百分比 %）。"
+                Modifier.addictive(1.0).perLevel(0).capacity(100),
+                "每触发一档额外伤害（百分比 %）。",
+                "默认：每触发 1 档，伤害 +1%。"
         );
 
-        this.damageStep = Modifier.load(config, "Settings.Damage.Step",
-                Modifier.addictive(0.5),
-                "每损失 X 点生命值就提高一次伤害倍率，X 即为该数值。",
-                "默认：每损失 0.5 生命值（HP）额外提高 5% 伤害。"
+        // damageStepPercent：默认 2%，不随等级增长
+        this.damageStepPercent = Modifier.load(config, "Settings.Damage.Step",
+                Modifier.addictive(2.0).perLevel(0).capacity(100),
+                "每损失 X% 最大生命值就提高一次伤害倍率，X 即为该数值。",
+                "默认：每损失 2% 最大生命值（Max HP）触发 1 档。"
         );
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAmount(level)));
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getDamageStep(level)));
+        // amount = 每档加成（%）
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT,
+                level -> NumberUtil.format(this.getDamageAmount(level)));
+
+        // radius：这里沿用原 placeholder，但含义为 stepPercent（%）
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS,
+                level -> NumberUtil.format(this.getDamageStepPercent(level)));
     }
 
     public double getDamageAmount(int level) {
         return this.damageAmount.getValue(level);
     }
 
-    public double getDamageStep(int level) {
-        return this.damageStep.getValue(level);
+    /** 每档阈值：损失最大生命值的百分比（%） */
+    public double getDamageStepPercent(int level) {
+        return this.damageStepPercent.getValue(level);
     }
 
     @Override
@@ -60,21 +77,31 @@ public class TemperEnchant extends GameEnchantment implements AttackEnchant {
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
-        double health = damager.getHealth();
+    public boolean onAttack(@NotNull EntityDamageByEntityEvent event,
+                            @NotNull LivingEntity damager,
+                            @NotNull LivingEntity victim,
+                            @NotNull ItemStack weapon,
+                            int level) {
+
         double maxHealth = EntityUtil.getAttributeValue(damager, Attribute.MAX_HEALTH);
+        if (maxHealth <= 0D) return false;
+
+        double health = damager.getHealth();
         if (health >= maxHealth) return false;
 
-        double missingHealth = maxHealth - health;
-        double step = this.getDamageStep(level);
-        if (step == 0 || missingHealth < step) return false;
+        // 损失百分比（0~100）
+        double missingPercent = ((maxHealth - health) / maxHealth) * 100D;
 
-        double steps = Math.floor(missingHealth / step);
-        if (steps == 0) return false;
+        double stepPercent = this.getDamageStepPercent(level);
+        if (stepPercent <= 0D || missingPercent < stepPercent) return false;
 
-        double percent = 1D + (this.getDamageAmount(level) * steps / 100D);
+        double steps = Math.floor(missingPercent / stepPercent);
+        if (steps <= 0D) return false;
 
-        event.setDamage(event.getDamage() * percent);
+        // 伤害倍率 = 1 + (每档加成% * 档数 / 100)
+        double multiplier = 1D + (this.getDamageAmount(level) * steps / 100D);
+
+        event.setDamage(event.getDamage() * multiplier);
         return true;
     }
 }

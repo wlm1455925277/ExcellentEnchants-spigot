@@ -1,15 +1,14 @@
 package su.nightexpress.excellentenchants.enchantment.bow;
 
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
@@ -22,6 +21,7 @@ import su.nightexpress.excellentenchants.api.enchantment.type.ArrowEnchant;
 import su.nightexpress.excellentenchants.enchantment.EnchantContext;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
+import su.nightexpress.excellentenchants.protection.ProtectionManager;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.NumberUtil;
@@ -43,24 +43,12 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
-        this.fireSpread = ConfigValue.create("Explosion.Fire_Spread",
-                true,
-                "控制爆炸是否会点燃附近方块（引燃火焰）。"
-        ).read(config);
-
-        this.damageItems = ConfigValue.create("Explosion.Damage_Items",
-                false,
-                "控制爆炸是否可以破坏地上的掉落物（Item）与展示框（ItemFrame）。"
-        ).read(config);
-
-        this.damageBlocks = ConfigValue.create("Explosion.Damage_Blocks",
-                false,
-                "控制爆炸是否可以破坏方块（地形破坏）。"
-        ).read(config);
+        this.fireSpread = ConfigValue.create("Explosion.Fire_Spread", true).read(config);
+        this.damageItems = ConfigValue.create("Explosion.Damage_Items", false).read(config);
+        this.damageBlocks = ConfigValue.create("Explosion.Damage_Blocks", false).read(config);
 
         this.power = Modifier.load(config, "Explosion.Power",
-                Modifier.addictive(1).perLevel(1).capacity(5),
-                "爆炸威力（强度）。"
+                Modifier.addictive(1).perLevel(1).capacity(5)
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getPower(level)));
@@ -68,14 +56,6 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
 
     public final double getPower(int level) {
         return this.power.getValue(level);
-    }
-
-    public final boolean isFireSpread() {
-        return this.fireSpread;
-    }
-
-    public final boolean isDamageBlocks() {
-        return this.damageBlocks;
     }
 
     @Override
@@ -90,21 +70,43 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow projectile, int level) {
-        Location location = projectile.getLocation();
+    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow arrow, int level) {
+        NamespacedKey onceKey = new NamespacedKey(this.plugin, "ee_explosive_once");
+        if (arrow.getPersistentDataContainer().has(onceKey, PersistentDataType.BYTE)) return;
+        arrow.getPersistentDataContainer().set(onceKey, PersistentDataType.BYTE, (byte) 1);
+
+        Location loc = arrow.getLocation();
         float power = (float) this.getPower(level);
 
-        this.plugin.getEnchantManager().createExplosion(shooter, location, power, this.fireSpread, this.damageBlocks, explosion -> {
-            if (!this.damageItems) explosion.setOnDamage(damageEvent -> {
-                if (damageEvent.getEntity() instanceof Item || damageEvent.getEntity() instanceof ItemFrame) {
-                    damageEvent.setCancelled(true);
-                }
-            });
+        Player owner = (shooter instanceof Player p) ? p : null;
+
+        ArmorStand marker = loc.getWorld().spawn(loc, ArmorStand.class, as -> {
+            as.setInvisible(true);
+            as.setMarker(true);
+            as.setInvulnerable(true);
+            as.setSilent(true);
+            as.setGravity(false);
+            as.setPersistent(false);
+            as.setRemoveWhenFarAway(true);
         });
+
+        ProtectionManager.markExplosionSource(
+                marker,
+                owner,
+                true,
+                true,
+                true,
+                this.damageBlocks,
+                this.damageItems
+        );
+
+        loc.getWorld().createExplosion(loc, power, this.fireSpread, this.damageBlocks, marker);
+
+        marker.remove();
+        arrow.remove();
     }
 
     @Override
     public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
-
     }
 }

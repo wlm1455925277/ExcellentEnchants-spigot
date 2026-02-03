@@ -60,8 +60,8 @@ public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEn
 
         if (this.hasVisualEffects()) {
             Location center = LocationUtil.setCenter2D(location.add(0, 1, 0));
-            UniParticle.blockCrack(block.getType()).play(center, 0.5, 0.1, 100);
-            UniParticle.of(Particle.ELECTRIC_SPARK).play(center, 0.75, 0.05, 120);
+            UniParticle.blockCrack(block.getType()).play(center, 0.5, 0.1, 20);
+            UniParticle.of(Particle.ELECTRIC_SPARK).play(center, 0.75, 0.05, 24);
         }
     }
 

@@ -598,8 +598,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
             SoulboundEnchant::new
     ),
 
-    BANE_OF_NETHERSPAWN(() -> EnchantDefinition.builder("下界生物杀手", 5)
-            .description("对下界生物额外造成 " + GENERIC_DAMAGE + "❤ 伤害。")
+    BANE_OF_NETHERSPAWN(() -> EnchantDefinition.builder("下界杀手", 5)
+            .description("对下界生物造成 " + GENERIC_DAMAGE + " 倍伤害。")
             .weight(COMMON)
             .supportedItems(ItemSetDefaults.SWORDS_AXES)
             .primaryItems(ItemSetDefaults.SWORD)

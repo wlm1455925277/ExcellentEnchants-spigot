@@ -49,7 +49,7 @@ public class CureEnchant extends GameEnchantment implements AttackEnchant {
         event.setCancelled(true);
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.CLOUD).play(victim.getEyeLocation(), 0.25, 0.1, 30);
+            UniParticle.of(Particle.CLOUD).play(victim.getEyeLocation(), 0.25, 0.1, 6);
         }
 
         if (victim instanceof PigZombie) {

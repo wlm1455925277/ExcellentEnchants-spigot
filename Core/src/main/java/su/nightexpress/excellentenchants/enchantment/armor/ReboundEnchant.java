@@ -78,7 +78,7 @@ public class ReboundEnchant extends GameEnchantment implements ProtectionEnchant
 
         if (this.hasVisualEffects()) {
             Location location = LocationUtil.setCenter2D(entity.getLocation());
-            UniParticle.of(Particle.ITEM_SLIME).play(location, 0.45, 0.15, 50);
+            UniParticle.of(Particle.ITEM_SLIME).play(location, 0.45, 0.15, 5);
         }
 
         Vector velocity = entity.getVelocity();

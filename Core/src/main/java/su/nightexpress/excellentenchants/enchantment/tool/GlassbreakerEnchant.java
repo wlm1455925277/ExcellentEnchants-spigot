@@ -75,7 +75,7 @@ public class GlassbreakerEnchant extends GameEnchantment implements InteractEnch
         if (!GLASS.contains(material)) return false;
         if (!player.breakBlock(block)) return false;
 
-        UniParticle.blockCrack(material).play(LocationUtil.setCenter3D(block.getLocation()), 0.5, 0.1, 10);
+        UniParticle.blockCrack(material).play(LocationUtil.setCenter3D(block.getLocation()), 0.5, 0.1, 2);
         VanillaSound.of(soundGroup.getBreakSound()).play(player);
         return true;
     }

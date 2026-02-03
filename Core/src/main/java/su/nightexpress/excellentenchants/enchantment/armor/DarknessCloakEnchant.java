@@ -45,7 +45,7 @@ public class DarknessCloakEnchant extends GameEnchantment implements DefendEncha
         if (!this.addPotionEffect(damager, level)) return false;
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.ASH).play(damager.getEyeLocation(), 0.75, 0.1, 30);
+            UniParticle.of(Particle.ASH).play(damager.getEyeLocation(), 0.75, 0.1, 6);
         }
 
         return true;
